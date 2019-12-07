@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group >
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/menu_home"
+            app:showAsAction="never">
+
+        </item>
+        <item
+            android:id="@+id/nav_delete_all_terms"
+            android:title="@string/menu_delete_all_terms"
+            app:showAsAction="never">
+
+        </item>
+    </group>
+</menu>

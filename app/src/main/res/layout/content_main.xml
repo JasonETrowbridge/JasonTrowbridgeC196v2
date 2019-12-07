@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp">
+
+    <Button
+        android:id="@+id/courses_button"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:onClick="showCourseList"
+        android:text="@string/courses_button"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+
+    </Button>
+    <Button
+        android:id="@+id/terms_button"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:onClick="showTermList"
+        android:text="@string/terms_button"
+        android:layout_above="@id/courses_button"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp"
+        >
+    </Button>
+    <Button
+        android:id="@+id/assessments_button"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:onClick="showAssessmentList"
+        android:text="@string/assessments_button"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/courses_button"
+        android:layout_margin="30dp"
+        >
+
+    </Button>
+
+</RelativeLayout>
+
+   
