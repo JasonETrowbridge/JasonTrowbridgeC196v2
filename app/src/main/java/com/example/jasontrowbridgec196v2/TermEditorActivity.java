@@ -47,8 +47,6 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     private TextView datePickerView;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         dateFormat = new SimpleDateFormat("MM-dd-YYY", Locale.US);
