@@ -46,6 +46,9 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
         notifyDataSetChanged();//*** NOT THE BEST OPTION ***
     }
 
+    public TermEntity getTermAtPosition(int position){
+        return terms.get(position);
+    }
     class TermViewHolder extends RecyclerView.ViewHolder{
        private TextView textViewTermTitle;
        private TextView textViewTermDates;
