@@ -28,6 +28,8 @@ import java.util.Locale;
 
 public class TermEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
+    public static final String EXTRA_ID =
+            "com.example.jasontrowbridgec196v2.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
     public static final String EXTRA_START_DATE =
@@ -57,10 +59,21 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Term");
+
         editTextTitle = findViewById(R.id.edit_text_title);
         termStartDate = findViewById(R.id.term_start_date_text);
         termEndDate = findViewById(R.id.term_end_date_text);
+
+        Intent intent = getIntent();
+
+        if(intent.hasExtra(EXTRA_ID)){
+            setTitle("Edit Term");
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            termStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+            termEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+        } else {
+            setTitle("Add Term");
+        }
 
         startDatePickerButton = findViewById(R.id.start_date_picker);
         endDatePickerButton = findViewById(R.id.end_date_picker);
@@ -99,6 +112,10 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         data.putExtra(EXTRA_START_DATE, startDate);
         data.putExtra(EXTRA_END_DATE, endDate);
 
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if(id != -1){
+            data.putExtra(EXTRA_ID, id);
+        }
         setResult(RESULT_OK, data);
         finish();
     }

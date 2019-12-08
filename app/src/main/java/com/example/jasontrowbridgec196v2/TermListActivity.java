@@ -27,6 +27,7 @@ import java.util.List;
 
 public class TermListActivity extends AppCompatActivity {
     public static final int ADD_TERM_REQUEST = 1;
+    public static final int EDIT_TERM_REQUEST = 2;
     private TermViewModel termViewModel;
 
 
@@ -75,12 +76,25 @@ public class TermListActivity extends AppCompatActivity {
                 Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
+
+        adapter.setOnItemClickListener(new TermAdapter.OnItemClickListener() {
+            //Selects item clicked to be edited in TermEditorActivity and populates fields with selected term data
+            @Override
+            public void onItemClick(TermEntity term) {
+                Intent intent = new Intent(TermListActivity.this, TermEditorActivity.class);
+                intent.putExtra(TermEditorActivity.EXTRA_ID, term.getTerm_id());
+                intent.putExtra(TermEditorActivity.EXTRA_TITLE, term.getTerm_title());
+                intent.putExtra(TermEditorActivity.EXTRA_START_DATE, term.getTerm_start_date());
+                intent.putExtra(TermEditorActivity.EXTRA_END_DATE, term.getTerm_end_date());
+                startActivityForResult(intent, EDIT_TERM_REQUEST);
+            }
+        });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK){
+        if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
             String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
             String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
@@ -90,8 +104,23 @@ public class TermListActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Term saved!", Toast.LENGTH_SHORT).show();
 
+        } else if (requestCode == EDIT_TERM_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra(TermEditorActivity.EXTRA_ID, -1);
+
+            if (id == -1) {
+                Toast.makeText(this, "Term can't be updated!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
+            String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
+            String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
+
+            TermEntity term = new TermEntity(title, startDate, endDate);
+            term.setTerm_id(id);
+            termViewModel.insertTerm(term);
+            Toast.makeText(this, "Term has been UPDATED!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Term NOT saved.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Term NOT Saved!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -106,7 +135,7 @@ public class TermListActivity extends AppCompatActivity {
             case R.id.nav_delete_all_terms:
                 termViewModel.deleteAllTerms();
                 Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
-
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

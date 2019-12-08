@@ -18,7 +18,7 @@ import java.util.List;
 
 public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder> {
     private List<TermEntity> terms = new ArrayList<>();
-
+    private OnItemClickListener listener;
 
     @NonNull
     @Override
@@ -41,23 +41,42 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
         return terms.size();
     }
 
-    public void setTerms(List<TermEntity> terms){
+    public void setTerms(List<TermEntity> terms) {
         this.terms = terms;
         notifyDataSetChanged();//*** NOT THE BEST OPTION ***
     }
 
-    public TermEntity getTermAtPosition(int position){
+    public TermEntity getTermAtPosition(int position) {
         return terms.get(position);
     }
-    class TermViewHolder extends RecyclerView.ViewHolder{
-       private TextView textViewTermTitle;
-       private TextView textViewTermDates;
+
+    class TermViewHolder extends RecyclerView.ViewHolder {
+        private TextView textViewTermTitle;
+        private TextView textViewTermDates;
 
 
-       public TermViewHolder(@NonNull View itemView) {
-           super(itemView);
-           textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);
-           textViewTermDates = itemView.findViewById(R.id.text_view_term_dates);
-       }
-   }
+        public TermViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);
+            textViewTermDates = itemView.findViewById(R.id.text_view_term_dates);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(terms.get(position));
+                    }
+                }
+            });
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(TermEntity term);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 }

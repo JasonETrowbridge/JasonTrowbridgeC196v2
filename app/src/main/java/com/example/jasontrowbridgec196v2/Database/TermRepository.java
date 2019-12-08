@@ -9,9 +9,10 @@ import java.util.List;
 
 
 public class TermRepository {
-    private TermDAO termDAO;
 
+    private TermDAO termDAO;
     private LiveData<List<TermEntity>> allTerms;
+
 
     public TermRepository(Application application){
         Database database = Database.getDbInstance(application);
