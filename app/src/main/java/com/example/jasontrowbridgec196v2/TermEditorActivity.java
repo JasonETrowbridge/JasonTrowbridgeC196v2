@@ -43,13 +43,13 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     Button startDatePickerButton;
     Button endDatePickerButton;
 
-    private SimpleDateFormat dateFormat;
+    private DateFormat dateFormat;
     private TextView datePickerView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        dateFormat = new SimpleDateFormat("MM-dd-YYY", Locale.US);
+        dateFormat = new SimpleDateFormat("MM/dd/YYYY", Locale.US);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_editor);
 
@@ -142,9 +142,9 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.MONTH, month = month +1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = DateFormat.getDateInstance(dateFormat.SHORT).format(calendar.getTime());
+        String currentDateString = month + "/" + dayOfMonth + "/" + year;
         datePickerView.setText(currentDateString);
     }
 }
