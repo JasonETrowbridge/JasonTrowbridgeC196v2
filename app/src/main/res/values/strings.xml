@@ -28,6 +28,8 @@
     <string name="course_dates">Course Dates</string>
     <string name="course_title">Course Title</string>
     <string name="course_list">Course List</string>
+    <string name="add_course">Add Course</string>
+    <string name="save">Save</string>
 
 
     <string-array name="status">

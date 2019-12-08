@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -18,8 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jasontrowbridgec196v2.Database.Database;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.jasontrowbridgec196v2.Adapter.TermAdapter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,13 +28,22 @@ import java.util.Locale;
 
 public class TermEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
+    public static final String EXTRA_TITLE =
+            "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
+    public static final String EXTRA_START_DATE =
+            "com.example.jasontrowbridgec196v2.START_DATE";
+    public static final String EXTRA_END_DATE =
+            "com.example.jasontrowbridgec196v2.END_DATE";
+
     private EditText editTextTitle;
-    private SimpleDateFormat dateFormat;
-    private TextView datePickerView;
-    Button startDatePickerButton;
-    Button endDatePickerButton;
     private EditText termStartDate;
     private EditText termEndDate;
+    Button startDatePickerButton;
+    Button endDatePickerButton;
+
+    private SimpleDateFormat dateFormat;
+    private TextView datePickerView;
+
 
 
 
@@ -48,7 +57,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Edit Term");
+        setTitle("Add Term");
         editTextTitle = findViewById(R.id.edit_text_title);
         termStartDate = findViewById(R.id.term_start_date_text);
         termEndDate = findViewById(R.id.term_end_date_text);
@@ -75,29 +84,42 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         });
     }
 
+    private void saveTerm() {
+        String title = editTextTitle.getText().toString();
+        String startDate = termStartDate.getText().toString();
+        String endDate = termEndDate.getText().toString();
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.edit_term:
-
-                Toast.makeText(this, "Save Term selected", Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(TermEditorActivity.this, TermListActivity.class);
-                startActivity(intent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert a title, start date, and end date.", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
+        Intent data = new Intent();
+        data.putExtra(EXTRA_TITLE, title);
+        data.putExtra(EXTRA_START_DATE, startDate);
+        data.putExtra(EXTRA_END_DATE, endDate);
+
+        setResult(RESULT_OK, data);
+        finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.term_editor_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save_term:
+                saveTerm();
+                Toast.makeText(this, "Save Term selected", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

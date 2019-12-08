@@ -25,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class TermListActivity extends AppCompatActivity {
+    public static final int ADD_TERM_REQUEST = 1;
     private TermViewModel termViewModel;
 
 
@@ -34,12 +35,12 @@ public class TermListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_list);
 
-        FloatingActionButton buttonAddNote = findViewById(R.id.fab_add_term);
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton buttonAddTerm = findViewById(R.id.fab_add_term);
+        buttonAddTerm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TermListActivity.this, TermEditorActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, ADD_TERM_REQUEST);
             }
         });
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -55,12 +56,28 @@ public class TermListActivity extends AppCompatActivity {
         termViewModel = ViewModelProviders.of(this).get(TermViewModel.class);
         termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
             @Override
-            public void onChanged(List<TermEntity> termEntities) {
-                adapter.setTerms(termEntities);
+            public void onChanged(List<TermEntity> terms) {
+                adapter.setTerms(terms);
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK){
+            String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
+            String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
+            String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
 
+            TermEntity term = new TermEntity(title, startDate, endDate);
+            termViewModel.insertTerm(term);
+
+            Toast.makeText(this, "Term saved!", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(this, "Term NOT saved.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
