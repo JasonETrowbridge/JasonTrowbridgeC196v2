@@ -1,5 +1,6 @@
 package com.example.jasontrowbridgec196v2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -71,9 +73,26 @@ public class TermListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                termViewModel.deleteTerm(adapter.getTermAtPosition(viewHolder.getAdapterPosition()));
-                Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
+                builder.setMessage("Are you sure you want to delete this term?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                termViewModel.deleteTerm(adapter.getTermAtPosition(viewHolder.getAdapterPosition()));
+                                Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         }).attachToRecyclerView(recyclerView);
 

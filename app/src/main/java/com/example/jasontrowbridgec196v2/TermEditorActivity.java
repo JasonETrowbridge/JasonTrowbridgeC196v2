@@ -1,12 +1,14 @@
 package com.example.jasontrowbridgec196v2;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,14 +44,12 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     private EditText termEndDate;
     Button startDatePickerButton;
     Button endDatePickerButton;
-
-    private DateFormat dateFormat;
     private TextView datePickerView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        dateFormat = new SimpleDateFormat("MM/dd/YYYY", Locale.US);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_editor);
 
@@ -129,8 +129,23 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save_term:
-                saveTerm();
-                Toast.makeText(this, "Save Term selected", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TermEditorActivity.this);
+                builder.setMessage("Save?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                saveTerm();
+                                Toast.makeText(TermEditorActivity.this, "Term was saved.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(TermEditorActivity.this, TermListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
