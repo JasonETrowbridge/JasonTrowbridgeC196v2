@@ -39,7 +39,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         return courses.size();
     }
 
-    public void setTerms(List<CourseEntity> courses) {
+    public void setCourses(List<CourseEntity> courses) {
         this.courses = courses;
         notifyDataSetChanged();//*** NOT THE BEST OPTION ***
     }

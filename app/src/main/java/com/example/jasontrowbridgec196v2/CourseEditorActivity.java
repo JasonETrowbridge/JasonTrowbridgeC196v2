@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -23,31 +22,33 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-
-public class TermEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
-
+public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     public static final String EXTRA_ID =
             "com.example.jasontrowbridgec196v2.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
     public static final String EXTRA_START_DATE =
-            "com.example.jasontrowbridgec196v2.START_DATE";
+            "com.example.jasontrowbridgec196v2.EXTRA_START_DATE";
     public static final String EXTRA_END_DATE =
-            "com.example.jasontrowbridgec196v2.END_DATE";
+            "com.example.jasontrowbridgec196v2.EXTRA_END_DATE";
+    public static final String EXTRA_STATUS =
+            "com.example.jasontrowbridgec196v2.EXTRA_STATUS";
+    public static final String EXTRA_TERMID =
+            "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
 
     private EditText editTextTitle;
-    private EditText termStartDate;
-    private EditText termEndDate;
+    private EditText courseStartDate;
+    private EditText courseEndDate;
+    private EditText courseStatus;
+    private EditText courseTermID;
     Button startDatePickerButton;
     Button endDatePickerButton;
     private TextView datePickerView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_term_editor);
+        setContentView(R.layout.activity_course_editor);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,18 +56,22 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         editTextTitle = findViewById(R.id.edit_text_title);
-        termStartDate = findViewById(R.id.term_start_date_text);
-        termEndDate = findViewById(R.id.term_end_date_text);
+        courseStartDate = findViewById(R.id.course_start_date_text);
+        courseEndDate = findViewById(R.id.course_end_date_text);
+        courseStatus = findViewById(R.id.course_status_text);
+        courseTermID = findViewById(R.id.course_termid_text);
 
         Intent intent = getIntent();
 
-        if(intent.hasExtra(EXTRA_ID)){
-            setTitle("Edit Term");
+        if (intent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit Course");
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-            termStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
-            termEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+            courseStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
+            courseEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+            courseStatus.setText(intent.getStringExtra(EXTRA_STATUS));
+            courseTermID.setText(intent.getStringExtra(EXTRA_TERMID));
         } else {
-            setTitle("Add Term");
+            setTitle("Add Course");
         }
 
         startDatePickerButton = findViewById(R.id.start_date_picker);
@@ -75,7 +80,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         startDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.term_start_date_text);
+                datePickerView = findViewById(R.id.course_start_date_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -84,20 +89,22 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         endDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.term_end_date_text);
+                datePickerView = findViewById(R.id.course_end_date_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
         });
     }
 
-    private void saveTerm() {
+    private void saveCourse() {
         String title = editTextTitle.getText().toString();
-        String startDate = termStartDate.getText().toString();
-        String endDate = termEndDate.getText().toString();
+        String startDate = courseStartDate.getText().toString();
+        String endDate = courseEndDate.getText().toString();
+        String status = courseStatus.getText().toString();
+        String termID = courseTermID.getText().toString();
 
-        if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
-            Toast.makeText(this, "Please insert a title, start date, and end date.", Toast.LENGTH_SHORT).show();
+        if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty() || status.trim().isEmpty() || termID.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert a title, start date, and end date, status, and termID.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -105,6 +112,8 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_START_DATE, startDate);
         data.putExtra(EXTRA_END_DATE, endDate);
+        data.putExtra(EXTRA_STATUS, status);
+        data.putExtra(EXTRA_TERMID, termID);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if(id != -1){
@@ -117,26 +126,26 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.term_editor_menu, menu);
+        inflater.inflate(R.menu.course_editor_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.save_term:
-                AlertDialog.Builder builder = new AlertDialog.Builder(TermEditorActivity.this);
+            case R.id.save_course:
+                AlertDialog.Builder builder = new AlertDialog.Builder(CourseEditorActivity.this);
                 builder.setMessage("Save?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                saveTerm();
-                                Toast.makeText(TermEditorActivity.this, "Term was saved.", Toast.LENGTH_SHORT).show();
+                                saveCourse();
+                                Toast.makeText(CourseEditorActivity.this, "Course was saved.", Toast.LENGTH_SHORT).show();
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(TermEditorActivity.this, TermListActivity.class);
+                        Intent intent = new Intent(CourseEditorActivity.this, CourseListActivity.class);
                         startActivity(intent);
                     }
                 });
@@ -159,3 +168,4 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         datePickerView.setText(currentDateString);
     }
 }
+

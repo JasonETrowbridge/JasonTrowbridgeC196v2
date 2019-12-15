@@ -22,10 +22,10 @@ public class CourseEntity {
 
     private String course_status;
 
-    private int term_id;
+    private String term_id;
 
     //Constructor
-    public CourseEntity(String course_title, String course_start_date, String course_end_date, String course_status, int term_id) {
+    public CourseEntity(String course_title, String course_start_date, String course_end_date, String course_status, String term_id) {
         this.course_title = course_title;
         this.course_start_date = course_start_date;
         this.course_end_date = course_end_date;
@@ -60,7 +60,7 @@ public class CourseEntity {
         return course_status;
     }
 
-    public int getTerm_id() {
+    public String getTerm_id() {
         return term_id;
     }
 }

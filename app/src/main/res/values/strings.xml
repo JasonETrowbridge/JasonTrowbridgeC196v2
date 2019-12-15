@@ -30,6 +30,12 @@
     <string name="course_list">Course List</string>
     <string name="add_course">Add Course</string>
     <string name="save">Save</string>
+    <string name="mentor_list">Mentor List</string>
+    <string name="add_mentor">Add Mentor</string>
+    <string name="course_status">Status</string>
+    <string name="mentor_name">Mentor Name</string>
+    <string name="course_term_id">Term ID</string>
+    <string name="menu_delete_all_courses">Delete All Courses</string>
 
 
     <string-array name="status">
