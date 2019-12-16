@@ -43,4 +43,9 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    //ButterKnife
+    implementation 'com.jakewharton:butterknife:10.2.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+
 }

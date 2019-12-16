@@ -13,12 +13,12 @@ import java.util.List;
 
 public class CourseViewModel extends AndroidViewModel {
     private CourseRepository repository;
-    private LiveData<List<CourseEntity>> allCourses;
+    public LiveData<List<CourseEntity>> allCourses;
 
     public CourseViewModel(@NonNull Application application) {
         super(application);
-        repository = new CourseRepository(application);
-        allCourses = repository.getAllCourses();
+        repository = CourseRepository.getInstance(application.getApplicationContext());
+        allCourses = repository.mCourses;
     }
 
     public void insertCourse(CourseEntity course){
@@ -39,5 +39,8 @@ public class CourseViewModel extends AndroidViewModel {
 
     public CourseEntity getCourseByID(int courseID){
         return repository.getCourseByID(courseID);
+    }
+    public void setCurrentTerm(int currentTerm){
+        allCourses = repository.getCoursesByTerm(currentTerm);
     }
 }

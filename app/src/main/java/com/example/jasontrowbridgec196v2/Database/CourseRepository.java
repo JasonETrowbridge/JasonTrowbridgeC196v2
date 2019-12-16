@@ -1,94 +1,96 @@
 package com.example.jasontrowbridgec196v2.Database;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 public class CourseRepository {
     private CourseDAO courseDAO;
 
-    private LiveData<List<CourseEntity>> allCourses;
+    private static CourseRepository ourInstance;
 
-    public CourseRepository(Application application){
-        Database database = Database.getDbInstance(application);
-        courseDAO = database.courseDAO();
-        allCourses = courseDAO.getAllCourses();
+    public LiveData<List<CourseEntity>> mCourses;
 
+    public LiveData<List<CourseEntity>> tCourses;
+    public Integer courseTerm;
+
+    private Database database;
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+    public static CourseRepository getInstance(Context context){
+        if(ourInstance == null) {
+            ourInstance = new CourseRepository(context);
+        }
+        return ourInstance;
+    }
+
+    private CourseRepository(Context context){
+        database = Database.getDbInstance(context);
+        mCourses = getAllCourses();
     }
 
     //Insert methods
-    public void insertCourse(CourseEntity course){
-        new InsertCourseAsyncTask(courseDAO).execute(course);
-
+    public void insertCourse(final CourseEntity course){
+        executor.execute(new Runnable() {
+            @Override
+            public void run(){
+                database.courseDAO().insertCourse(course);
+            }
+        });
     }
 
+    private LiveData<List<CourseEntity>> getAllCourses() {
+        return database.courseDAO().getAll();
+    }
     //Delete methods
-    public void deleteCourse(CourseEntity course){
-        new DeleteCourseAsyncTask(courseDAO).execute(course);
+    public void deleteCourse(final CourseEntity course){
+        executor.execute(new Runnable() {
+            @Override
+            public void run(){
+                int numChildren = database.assessmentDAO().getAssessmentCountByCourse(course.getCourse_id());
+                numChildren += database.mentorDAO().getMentorCountByCourse(course.getCourse_id());
+                if(numChildren == 0){
+                    database.courseDAO().deleteCourse(course);
+                }
+            }
+        });
 
     }
 
     public void deleteAllCourses(){
-        new DeleteAllCoursesAsyncTask(courseDAO).execute();
+        executor.execute(new Runnable() {
+            @Override
+            public void run(){
+                int numChildren = database.assessmentDAO().getAssessmentCountByAnyCourse();
+                numChildren += database.mentorDAO().getMentorCountByAnyCourse();
+                if (numChildren == 0){
+                    database.courseDAO().deleteAllCourses();
+                }
+            }
+        });
 
     }
 
     //Get methods
-    public LiveData<List<CourseEntity>> getAllCourses(){
-        return allCourses;
+    public LiveData<List<CourseEntity>> getmCourses(){
+        return mCourses;
     }
 
     public CourseEntity getCourseByID(int courseID){
-        return courseDAO.getCourseByID(courseID);
+        return database.courseDAO().getCourseByID(courseID);
     }
 
     public LiveData<List<CourseEntity>> getCoursesByTerm(int courseTerm){
-        return courseDAO.getCoursesByTerm(courseTerm);
+        this.courseTerm = courseTerm;
+        tCourses = database.courseDAO().getCoursesByTerm(courseTerm);
+        return tCourses;
     }
 
-    private static class InsertCourseAsyncTask extends AsyncTask<CourseEntity, Void, Void>{
-        private CourseDAO courseDAO;
-
-        private InsertCourseAsyncTask(CourseDAO courseDAO){
-            this.courseDAO = courseDAO;
-        }
-
-        @Override
-        protected Void doInBackground(CourseEntity... courseEntities) {
-            courseDAO.insertCourse(courseEntities[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteCourseAsyncTask extends AsyncTask<CourseEntity, Void, Void>{
-        private CourseDAO courseDAO;
-
-        private DeleteCourseAsyncTask(CourseDAO courseDAO){
-            this.courseDAO = courseDAO;
-        }
-
-        @Override
-        protected Void doInBackground(CourseEntity... courseEntities) {
-            courseDAO.deleteCourse(courseEntities[0]);
-            return null;
-        }
-    }
-
-    private static class DeleteAllCoursesAsyncTask extends AsyncTask<Void, Void, Void>{
-        private CourseDAO courseDAO;
-
-        private DeleteAllCoursesAsyncTask(CourseDAO courseDAO){
-            this.courseDAO = courseDAO;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            courseDAO.deleteAllCourses();
-            return null;
-        }
-    }
 }

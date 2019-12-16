@@ -13,19 +13,14 @@ public class CourseEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int course_id;
-
     private String course_title;
-
     private String course_start_date;
-
     private String course_end_date;
-
     private String course_status;
-
-    private String term_id;
+    private int term_id;
 
     //Constructor
-    public CourseEntity(String course_title, String course_start_date, String course_end_date, String course_status, String term_id) {
+    public CourseEntity(String course_title, String course_start_date, String course_end_date, String course_status, int term_id) {
         this.course_title = course_title;
         this.course_start_date = course_start_date;
         this.course_end_date = course_end_date;
@@ -33,10 +28,32 @@ public class CourseEntity {
         this.term_id = term_id;
     }
 
+    public void setCourse_title(String course_title) {
+        this.course_title = course_title;
+    }
+
+    public void setCourse_start_date(String course_start_date) {
+        this.course_start_date = course_start_date;
+    }
+
+    public void setCourse_end_date(String course_end_date) {
+        this.course_end_date = course_end_date;
+    }
+
+    public void setCourse_status(String course_status) {
+        this.course_status = course_status;
+    }
+
+    public void setTerm_id(int term_id) {
+        this.term_id = term_id;
+    }
+
     //Setter for course_id since it is auto-generated and not in the constructor
     public void setCourse_id(int course_id) {
         this.course_id = course_id;
     }
+
+
 
     //Getters
 
@@ -60,7 +77,7 @@ public class CourseEntity {
         return course_status;
     }
 
-    public String getTerm_id() {
+    public int getTerm_id() {
         return term_id;
     }
 }

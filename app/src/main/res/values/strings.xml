@@ -36,6 +36,7 @@
     <string name="mentor_name">Mentor Name</string>
     <string name="course_term_id">Term ID</string>
     <string name="menu_delete_all_courses">Delete All Courses</string>
+    <string name="title_activity_course_list">Course List</string>
 
 
     <string-array name="status">

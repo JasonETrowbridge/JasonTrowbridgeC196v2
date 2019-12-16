@@ -20,6 +20,8 @@ public abstract class Database extends RoomDatabase {
 
     private static volatile Database dbInstance;
 
+    private static final Object LOCK = new Object();
+
     public abstract TermDAO termDAO();
 
     public abstract CourseDAO courseDAO();
@@ -30,14 +32,19 @@ public abstract class Database extends RoomDatabase {
 
     public abstract NoteDAO noteDAO();
 
-    public static synchronized Database getDbInstance(Context context) {
+    public static Database getDbInstance(Context context) {
 
         if (dbInstance == null) {
-            dbInstance = Room.databaseBuilder(context.getApplicationContext(), Database.class, DATABASE_NAME)
-                    .fallbackToDestructiveMigration()
-                    .addCallback(roomCallBack)
-                    .build();
-            Toast.makeText(context, "Database being created", Toast.LENGTH_SHORT).show();
+            synchronized (LOCK) {
+                if (dbInstance == null) {
+
+                    dbInstance = Room.databaseBuilder(context.getApplicationContext(), Database.class, DATABASE_NAME)
+                            .fallbackToDestructiveMigration()
+                            .addCallback(roomCallBack)
+                            .build();
+                    Toast.makeText(context, "Database being created", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
         return dbInstance;
     }
@@ -75,11 +82,5 @@ public abstract class Database extends RoomDatabase {
             termDAO.insertTerm(new TermEntity("Term 3", "12/03/2019", "12/31/2019"));
             return null;
         }
-
-
-
-
-
-
     }
 }

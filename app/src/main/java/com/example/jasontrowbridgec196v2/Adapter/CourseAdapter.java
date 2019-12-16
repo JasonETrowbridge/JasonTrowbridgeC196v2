@@ -1,5 +1,7 @@
 package com.example.jasontrowbridgec196v2.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +10,29 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jasontrowbridgec196v2.CourseEditorActivity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-    private List<CourseEntity> courses = new ArrayList<>();
+    public static final String EXTRA_ID =
+            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    private final List<CourseEntity> courses;
+    private final Context context;
     private OnItemClickListener listener;
+
+
+    public CourseAdapter(List<CourseEntity> courses, Context context){
+        this.courses = courses;
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -29,9 +45,17 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
 
     @Override
     public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
-        CourseEntity currentCourse = courses.get(position);
-        holder.textViewCourseTitle.setText(currentCourse.getCourse_title());
-        holder.textViewCourseDates.setText(currentCourse.toString());
+        final CourseEntity course = courses.get(position);
+        holder.textViewCourseTitle.setText(course.getCourse_title());
+        holder.textViewCourseDates.setText(course.toString());
+        holder.mFab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, CourseEditorActivity.class);
+                intent.putExtra(EXTRA_ID, course.getCourse_id());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -39,24 +63,22 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         return courses.size();
     }
 
-    public void setCourses(List<CourseEntity> courses) {
-        this.courses = courses;
-        notifyDataSetChanged();//*** NOT THE BEST OPTION ***
-    }
-
     public CourseEntity getCourseAtPosition(int position) {
         return courses.get(position);
     }
 
     class CourseViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewCourseTitle;
-        private TextView textViewCourseDates;
+        @BindView(R.id.text_view_course_title)
+        TextView textViewCourseTitle;
+        @BindView(R.id.text_view_course_dates)
+        TextView textViewCourseDates;
+        @BindView(R.id.fab_add_course)
+        FloatingActionButton mFab;
 
 
         public CourseViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewCourseTitle = itemView.findViewById(R.id.text_view_course_title);
-            textViewCourseDates = itemView.findViewById(R.id.text_view_course_dates);
+            ButterKnife.bind(this, itemView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -152,8 +152,26 @@ public class TermListActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.nav_delete_all_terms:
-                termViewModel.deleteAllTerms();
-                Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
+                builder.setMessage("Delete all terms?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                termViewModel.deleteAllTerms();
+                                Toast.makeText(TermListActivity.this, "All terms were deleted!", Toast.LENGTH_SHORT).show();
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(TermListActivity.this, "Canceled!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+                //Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

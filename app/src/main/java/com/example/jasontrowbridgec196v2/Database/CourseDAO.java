@@ -29,7 +29,7 @@ public interface CourseDAO {
     LiveData<List<CourseEntity>> getCoursesByTerm(int termID);
 
     @Query("SELECT * FROM courses ORDER BY course_start_date DESC")
-    LiveData<List<CourseEntity>> getAllCourses();
+    LiveData<List<CourseEntity>> getAll();
 
     @Query("DELETE FROM courses")
     int deleteAllCourses();
