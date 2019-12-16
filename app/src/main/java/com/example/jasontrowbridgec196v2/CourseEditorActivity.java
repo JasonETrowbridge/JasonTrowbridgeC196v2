@@ -77,9 +77,12 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         setContentView(R.layout.activity_course_editor);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+
         ButterKnife.bind(this);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             editCourse = savedInstanceState.getBoolean(EXTRA_EDITING);
         }
 
@@ -88,10 +91,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         setupDatePickers();
         initViewModel();
@@ -120,20 +119,14 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
         Bundle extras = getIntent().getExtras();
 
-        int course_id = 0;
-        try {
-            course_id = extras.getInt(EXTRA_ID);
-        }catch (NullPointerException e){
-            Toast.makeText(this, "Null Pointer Exception", Toast.LENGTH_SHORT).show();
-        }
+
+        int course_id = extras.getInt(EXTRA_ID);
+
         if (course_id == 0) {
             setTitle("Add Course");
             newCourse = true;
-            try {
-                this.currentTermID = extras.getInt(EXTRA_TERMID);
-            } catch (NullPointerException e){
-                Toast.makeText(this, "Null Pointer Exception", Toast.LENGTH_SHORT).show();
-            }
+            this.currentTermID = extras.getInt(EXTRA_TERMID);
+
         } else {
             setTitle("Edit Course");
             this.currentCourseID = course_id;
@@ -168,7 +161,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //String status = parent.getItemAtPosition(position).toString();
-        courseStatus.getItemAtPosition(position);
+
     }
 
     @Override
@@ -188,6 +181,12 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         }
         courseEditorViewModel.saveData(title, startDate, endDate, status, currentTermID);
         finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        outState.putBoolean(EXTRA_EDITING, true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
