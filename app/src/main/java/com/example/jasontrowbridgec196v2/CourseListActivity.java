@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
@@ -27,52 +29,48 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 
 public class CourseListActivity extends AppCompatActivity {
     public static final int ADD_COURSE_REQUEST = 1;
     public static final int EDIT_COURSE_REQUEST = 2;
-
-    private FloatingActionButton courseAddFab;
-
-    public static final String EXTRA_TERMID =
-            "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
-
     private CourseViewModel courseViewModel;
-    private List<CourseEntity> courseData = new ArrayList<>();
-    private CourseAdapter courseAdapter;
-    private Integer courseParentTermField;
 
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-
-    @OnClick(R.id.fab_add_course)
-    void fabClickHandler(){
-        Intent intent = new Intent(this, CourseEditorActivity.class);
-        intent.putExtra(EXTRA_TERMID, courseParentTermField);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
+
+
+        FloatingActionButton buttonAddCourse = findViewById(R.id.fab_add_course);
+        buttonAddCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CourseListActivity.this, CourseEditorActivity.class);
+                startActivityForResult(intent, ADD_COURSE_REQUEST);
+            }
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ButterKnife.bind(this);
-        initRecyclerView();
-        initViewModel();
-        courseAddFab = findViewById(R.id.fab_add_course);
-        if (courseParentTermField == null){
-            courseAddFab.hide();
-        } else {
-            courseAddFab.show();
-        }
-/*
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        final CourseAdapter courseAdapter = new CourseAdapter();
+        recyclerView.setAdapter(courseAdapter);
+
+        courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
+        courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
+            @Override
+            public void onChanged(List<CourseEntity> courseEntities) {
+                courseAdapter.setCourses(courseEntities);
+            }
+        });
+
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT) {
             @Override
@@ -86,7 +84,7 @@ public class CourseListActivity extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                courseViewModel.deleteCourse(adapter.getCourseAtPosition(viewHolder.getAdapterPosition()));
+                                courseViewModel.deleteCourse(courseAdapter.getCourseAtPosition(viewHolder.getAdapterPosition()));
                                 Toast.makeText(CourseListActivity.this, "Course was deleted!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(CourseListActivity.this, CourseListActivity.class);
                                 startActivity(intent);
@@ -103,7 +101,7 @@ public class CourseListActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
+        courseAdapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
             //Selects item clicked to be edited in TermEditorActivity and populates fields with selected term data
             @Override
             public void onItemClick(CourseEntity course) {
@@ -112,56 +110,13 @@ public class CourseListActivity extends AppCompatActivity {
                 intent.putExtra(CourseEditorActivity.EXTRA_TITLE, course.getCourse_title());
                 intent.putExtra(CourseEditorActivity.EXTRA_START_DATE, course.getCourse_start_date());
                 intent.putExtra(CourseEditorActivity.EXTRA_END_DATE, course.getCourse_end_date());
-                intent.putExtra(String.valueOf(CourseEditorActivity.EXTRA_TERMID), course.getTerm_id());
+                intent.putExtra(CourseEditorActivity.EXTRA_TERMID, course.getTerm_id());
                 startActivityForResult(intent, EDIT_COURSE_REQUEST);
             }
-        }); */
+        });
     }
 
-    private void initViewModel(){
 
-        Bundle extras = getIntent().getExtras();
-        if(extras == null){
-            courseViewModel = ViewModelProviders.of(this)
-                    .get(CourseViewModel.class);
-        } else {
-            courseParentTermField = extras.getInt(EXTRA_TERMID);
-            courseViewModel = ViewModelProviders.of(this)
-                    .get(CourseViewModel.class);
-            courseViewModel.setCurrentTerm(courseParentTermField);
-        }
-
-        final Observer<List<CourseEntity>> coursesObserver =
-                new Observer<List<CourseEntity>>() {
-                    @Override
-                    public void onChanged(@Nullable List<CourseEntity> courseEntities) {
-                        courseData.clear();
-                        courseData.addAll(courseEntities);
-
-                        if (courseAdapter == null) {
-                            courseAdapter = new CourseAdapter(courseData,CourseListActivity.this);
-                            recyclerView.setAdapter(courseAdapter);
-                        } else {
-                            courseAdapter.notifyDataSetChanged();
-                        }
-                    }
-                };
-        courseViewModel = ViewModelProviders.of(this)
-                .get(CourseViewModel.class);
-        courseViewModel.allCourses.observe(this, coursesObserver);
-    }
-
-    private void initRecyclerView() {
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        DividerItemDecoration divider = new DividerItemDecoration(
-                recyclerView.getContext(), layoutManager.getOrientation());
-        recyclerView.addItemDecoration(divider);
-
-    }
-    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -170,6 +125,7 @@ public class CourseListActivity extends AppCompatActivity {
             String startDate = data.getStringExtra(CourseEditorActivity.EXTRA_START_DATE);
             String endDate = data.getStringExtra(CourseEditorActivity.EXTRA_END_DATE);
             String status = data.getStringExtra(CourseEditorActivity.EXTRA_STATUS);
+            //Not sure this is how I should get termID?
             int termID = data.getIntExtra("TermID",Integer.parseInt(CourseEditorActivity.EXTRA_TERMID));
 
             CourseEntity course = new CourseEntity(title, startDate, endDate, status, termID);
@@ -188,6 +144,7 @@ public class CourseListActivity extends AppCompatActivity {
             String startDate = data.getStringExtra(CourseEditorActivity.EXTRA_START_DATE);
             String endDate = data.getStringExtra(CourseEditorActivity.EXTRA_END_DATE);
             String status = data.getStringExtra(CourseEditorActivity.EXTRA_STATUS);
+            //Not sure this his how I should get termID?
             int termID = data.getIntExtra("TermID",Integer.parseInt(CourseEditorActivity.EXTRA_TERMID));
 
             CourseEntity course = new CourseEntity(title, startDate, endDate, status, termID);
@@ -198,7 +155,6 @@ public class CourseListActivity extends AppCompatActivity {
             Toast.makeText(this, "Course NOT Saved!", Toast.LENGTH_SHORT).show();
         }
     }
-    */
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

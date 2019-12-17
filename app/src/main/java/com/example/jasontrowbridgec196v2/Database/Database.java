@@ -17,19 +17,13 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 public abstract class Database extends RoomDatabase {
 
     private static final String DATABASE_NAME = "WGUC196.db";
-
     private static volatile Database dbInstance;
-
     private static final Object LOCK = new Object();
 
     public abstract TermDAO termDAO();
-
     public abstract CourseDAO courseDAO();
-
     public abstract AssessmentDAO assessmentDAO();
-
     public abstract MentorDAO mentorDAO();
-
     public abstract NoteDAO noteDAO();
 
     public static Database getDbInstance(Context context) {

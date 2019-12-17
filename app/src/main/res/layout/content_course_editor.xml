@@ -134,11 +134,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/course_status_label" />
 
-    <TextView
-        android:id="@+id/course_termid_text"
+    <Spinner
+        android:id="@+id/term_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="8"
+        android:hint="@string/course_status"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
         app:layout_constraintStart_toStartOf="@+id/course_end_date_text" />
@@ -153,7 +154,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course_termid_text" />
+        app:layout_constraintTop_toBottomOf="@+id/term_spinner" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mentor_list_recycler_view"

@@ -26,10 +26,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jasontrowbridgec196v2.Adapter.TermAdapter;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.TermsEditorViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,25 +53,18 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             "com.example.jasontrowbridgec196v2.EXTRA_STATUS";
     public static final String EXTRA_TERMID =
             "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
-    public static final String EXTRA_EDITING =
-            "com.example.jasontrowbridgec196v2.EXTRA_EDITING";
+
 
     private CourseEditorViewModel courseEditorViewModel;
+    private TermViewModel termViewModel;
+    private EditText editTextTitle;
+    private EditText courseStartDate;
+    private EditText courseEndDate;
+    private Spinner courseStatus;
+    private Spinner courseTermID;
     private boolean newCourse;
-    private boolean editCourse;
-    private Integer currentCourseID;
-    Integer currentTermID;
-
-    @BindView(R.id.edit_text_title)
-    EditText editTextTitle;
-    @BindView(R.id.course_start_date_text)
-    EditText courseStartDate;
-    @BindView(R.id.course_end_date_text)
-    EditText courseEndDate;
-    @BindView(R.id.course_spinner)
-    Spinner courseStatus;
-    @BindView(R.id.course_termid_text)
-    TextView courseTermID;
+    private int currentTermID;
+    private int currentCourseID;
 
     Button startDatePickerButton;
     Button endDatePickerButton;
@@ -80,17 +79,33 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
-        ButterKnife.bind(this);
-
-        if (savedInstanceState != null) {
-            editCourse = savedInstanceState.getBoolean(EXTRA_EDITING);
-        }
-
-        Spinner spinner = findViewById(R.id.course_spinner);
+        //Status Spinner setup
+        courseStatus = findViewById(R.id.course_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.status, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        courseStatus.setAdapter(adapter);
+        courseStatus.setOnItemSelectedListener(this);
+
+        //Term Spinner setup
+        courseTermID = findViewById(R.id.term_spinner);
+        final ArrayAdapter<TermEntity> termAdapter = new ArrayAdapter<TermEntity>(this,
+                android.R.layout.simple_spinner_item);
+        termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseTermID.setAdapter(termAdapter);
+
+        termViewModel = ViewModelProviders.of(this).get(TermViewModel.class);
+        termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
+            @Override
+            public void onChanged(List<TermEntity> termEntities) {
+                termAdapter.addAll(termEntities);
+            }
+        });
+
+        editTextTitle = findViewById(R.id.edit_text_title);
+        courseStartDate = findViewById(R.id.course_start_date_text);
+        courseEndDate = findViewById(R.id.course_end_date_text);
+        courseStatus.setAdapter(adapter);
+
 
         setupDatePickers();
         initViewModel();
@@ -104,33 +119,26 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
             @Override
             public void onChanged(@Nullable CourseEntity courseEntity) {
-
-                if (courseEntity != null && !editCourse) {
+                Intent intent = getIntent();
+                if (courseEntity != null && intent.hasExtra(EXTRA_ID)) {
                     editTextTitle.setText(courseEntity.getCourse_title());
                     courseStartDate.setText(courseEntity.getCourse_start_date());
                     courseEndDate.setText(courseEntity.getCourse_end_date());
-                    courseTermID.setText(courseEntity.getTerm_id());
+                    courseTermID.getSelectedItemPosition();
                     courseStatus.getSelectedItemPosition();
-                    currentTermID = courseEntity.getTerm_id();
-                    currentCourseID = courseEntity.getCourse_id();
                 }
             }
         });
 
         Bundle extras = getIntent().getExtras();
-
-
-        int course_id = extras.getInt(EXTRA_ID);
-
-        if (course_id == 0) {
+        if(extras == null){
             setTitle("Add Course");
             newCourse = true;
-            this.currentTermID = extras.getInt(EXTRA_TERMID);
-
         } else {
             setTitle("Edit Course");
-            this.currentCourseID = course_id;
-            courseEditorViewModel.loadData(currentCourseID);
+            int courseID = extras.getInt(EXTRA_ID);
+            this.currentCourseID = courseID;
+            courseEditorViewModel.loadData(courseID);
         }
     }
 
@@ -174,19 +182,14 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         String startDate = courseStartDate.getText().toString();
         String endDate = courseEndDate.getText().toString();
         String status = courseStatus.getSelectedItem().toString();
-
+        currentTermID = courseTermID.getId();
+        Toast.makeText(this, "currentTermID = " + currentTermID, Toast.LENGTH_SHORT).show();
         if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty() || status.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title, start date, and end date, status, and termID.", Toast.LENGTH_SHORT).show();
             return;
         }
         courseEditorViewModel.saveData(title, startDate, endDate, status, currentTermID);
         finish();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        outState.putBoolean(EXTRA_EDITING, true);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -233,7 +236,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         String currentDateString = month + "/" + dayOfMonth + "/" + year;
         datePickerView.setText(currentDateString);
     }
-
 
 }
 

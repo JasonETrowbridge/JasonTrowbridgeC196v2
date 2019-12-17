@@ -80,7 +80,6 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             }
         });
 
-
         editTextTitle = findViewById(R.id.edit_text_title);
         termStartDate = findViewById(R.id.term_start_date_text);
         termEndDate = findViewById(R.id.term_end_date_text);

@@ -16,6 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class CourseEditorViewModel extends AndroidViewModel {
+    private LiveData<List<CourseEntity>> allCourses;
     public MutableLiveData<CourseEntity> mLiveCourse = new MutableLiveData<>();
     private CourseRepository courseRepository;
 
@@ -24,8 +25,8 @@ public class CourseEditorViewModel extends AndroidViewModel {
 
     public CourseEditorViewModel(@NonNull Application application) {
         super(application);
-        courseRepository = CourseRepository.getInstance(getApplication());
-
+        courseRepository = new CourseRepository(application);
+        allCourses = courseRepository.getAllCourses();
     }
 
     public void loadData(final int courseID){
@@ -62,5 +63,9 @@ public class CourseEditorViewModel extends AndroidViewModel {
 
     public void deleteCourse(CourseEntity courseEntity){
         courseRepository.deleteCourse(mLiveCourse.getValue());
+    }
+
+    public int lastID(){
+        return allCourses.getValue().size();
     }
 }

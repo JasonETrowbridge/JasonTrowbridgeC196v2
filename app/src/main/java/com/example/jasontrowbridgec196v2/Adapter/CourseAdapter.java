@@ -22,24 +22,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
-    private final List<CourseEntity> courses;
-    private final Context context;
+
+    private List<CourseEntity> courses = new ArrayList<>();
     private OnItemClickListener listener;
-
-
-    public CourseAdapter(List<CourseEntity> courses, Context context){
-        this.courses = courses;
-        this.context = context;
-    }
 
     @NonNull
     @Override
     public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.courses_list, parent, false);
-
         return new CourseViewHolder(itemView);
     }
 
@@ -48,14 +39,6 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         final CourseEntity course = courses.get(position);
         holder.textViewCourseTitle.setText(course.getCourse_title());
         holder.textViewCourseDates.setText(course.toString());
-        holder.mFab.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(context, CourseEditorActivity.class);
-                intent.putExtra(EXTRA_ID, course.getCourse_id());
-                context.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -68,17 +51,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     }
 
     class CourseViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.text_view_course_title)
-        TextView textViewCourseTitle;
-        @BindView(R.id.text_view_course_dates)
-        TextView textViewCourseDates;
-        @BindView(R.id.fab_add_course)
-        FloatingActionButton mFab;
-
+        private TextView textViewCourseTitle;
+        private TextView textViewCourseDates;
 
         public CourseViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+           textViewCourseTitle = itemView.findViewById(R.id.text_view_course_title);
+           textViewCourseDates = itemView.findViewById(R.id.text_view_course_dates);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,6 +71,10 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         }
     }
 
+    public void setCourses(List<CourseEntity> courses) {
+        this.courses = courses;
+        notifyDataSetChanged();//*** NOT THE BEST OPTION ***
+    }
     public interface OnItemClickListener {
         void onItemClick(CourseEntity course);
     }
