@@ -22,23 +22,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Space;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jasontrowbridgec196v2.Adapter.TermAdapter;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.TermsEditorViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     public static final String EXTRA_ID =
@@ -60,8 +56,9 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     private EditText editTextTitle;
     private EditText courseStartDate;
     private EditText courseEndDate;
-    private Spinner courseStatus;
-    private Spinner courseTermID;
+    private Spinner courseStatusSpinner;
+    private Spinner courseTermIDSpinner;
+
     private boolean newCourse;
     private int currentTermID;
     private int currentCourseID;
@@ -80,31 +77,34 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         //Status Spinner setup
-        courseStatus = findViewById(R.id.course_spinner);
+        courseStatusSpinner = findViewById(R.id.course_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.status, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseStatus.setAdapter(adapter);
-        courseStatus.setOnItemSelectedListener(this);
+        courseStatusSpinner.setAdapter(adapter);
+        courseStatusSpinner.setOnItemSelectedListener(this);
 
         //Term Spinner setup
-        courseTermID = findViewById(R.id.term_spinner);
-        final ArrayAdapter<TermEntity> termAdapter = new ArrayAdapter<TermEntity>(this,
+        courseTermIDSpinner = findViewById(R.id.term_spinner);
+        final ArrayAdapter<TermEntity> termAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item);
         termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseTermID.setAdapter(termAdapter);
+        courseTermIDSpinner.setAdapter(termAdapter);
+        courseTermIDSpinner.setOnItemSelectedListener(this);
 
         termViewModel = ViewModelProviders.of(this).get(TermViewModel.class);
         termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
             @Override
             public void onChanged(List<TermEntity> termEntities) {
-                termAdapter.addAll(termEntities);
+               termAdapter.addAll(termEntities);
             }
         });
 
         editTextTitle = findViewById(R.id.edit_text_title);
         courseStartDate = findViewById(R.id.course_start_date_text);
         courseEndDate = findViewById(R.id.course_end_date_text);
-        courseStatus.setAdapter(adapter);
+        courseStatusSpinner.setAdapter(adapter);
+        courseStatusSpinner.getSelectedItemPosition();
+        courseTermIDSpinner.getSelectedItemPosition();
 
 
         setupDatePickers();
@@ -124,8 +124,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     editTextTitle.setText(courseEntity.getCourse_title());
                     courseStartDate.setText(courseEntity.getCourse_start_date());
                     courseEndDate.setText(courseEntity.getCourse_end_date());
-                    courseTermID.getSelectedItemPosition();
-                    courseStatus.getSelectedItemPosition();
+                    courseStatusSpinner.getSelectedItemPosition();
+                    courseTermIDSpinner.getSelectedItemPosition();
                 }
             }
         });
@@ -163,12 +163,13 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
         });
-
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //String status = parent.getItemAtPosition(position).toString();
+        //String termID = courseTermIDSpinner.getItemAtPosition(position).toString();
+        //String spinner_item2 = courseStatusSpinner.getItemAtPosition(position).toString();
 
     }
 
@@ -178,17 +179,18 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     }
 
     private void saveCourse() {
+
         String title = editTextTitle.getText().toString();
         String startDate = courseStartDate.getText().toString();
         String endDate = courseEndDate.getText().toString();
-        String status = courseStatus.getSelectedItem().toString();
-        currentTermID = courseTermID.getId();
-        Toast.makeText(this, "currentTermID = " + currentTermID, Toast.LENGTH_SHORT).show();
+        String status = courseStatusSpinner.getSelectedItem().toString();
+        currentTermID = courseTermIDSpinner.getSelectedItemPosition();
+
         if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty() || status.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title, start date, and end date, status, and termID.", Toast.LENGTH_SHORT).show();
             return;
         }
-        courseEditorViewModel.saveData(title, startDate, endDate, status, currentTermID);
+        courseEditorViewModel.saveData(title, startDate, endDate, status, 9);
         finish();
     }
 

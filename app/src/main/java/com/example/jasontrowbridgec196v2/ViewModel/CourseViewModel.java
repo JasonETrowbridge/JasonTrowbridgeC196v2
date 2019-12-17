@@ -40,6 +40,9 @@ public class CourseViewModel extends AndroidViewModel {
     public CourseEntity getCourseByID(int courseID){
         return repository.getCourseByID(courseID);
     }
+    public LiveData<List<CourseEntity>> getCoursesByTerm(int currentTerm){
+        return repository.getCoursesByTerm(currentTerm);
+    }
     public void setCurrentTerm(int currentTerm){
         allCourses = repository.getCoursesByTerm(currentTerm);
     }

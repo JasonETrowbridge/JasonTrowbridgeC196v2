@@ -12,13 +12,9 @@ public class MentorEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int mentor_id;
-
     private String mentor_name;
-
     private String mentor_phone;
-
     private String mentor_email;
-
     private String course_id;
 
     //Constructor

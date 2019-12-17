@@ -54,7 +54,6 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
         private TextView textViewTermTitle;
         private TextView textViewTermDates;
 
-
         public TermViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);

@@ -102,7 +102,7 @@ public class CourseListActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
 
         courseAdapter.setOnItemClickListener(new CourseAdapter.OnItemClickListener() {
-            //Selects item clicked to be edited in TermEditorActivity and populates fields with selected term data
+            //Selects item clicked to be edited in CourseEditorActivity and populates fields with selected term data
             @Override
             public void onItemClick(CourseEntity course) {
                 Intent intent = new Intent(CourseListActivity.this, CourseEditorActivity.class);
