@@ -45,7 +45,6 @@ public class TermEntity {
 
     @Override
     public String toString() {
-
-        return " " + term_start_date + "  -  " + term_end_date;
+        return getTerm_title();
     }
 }

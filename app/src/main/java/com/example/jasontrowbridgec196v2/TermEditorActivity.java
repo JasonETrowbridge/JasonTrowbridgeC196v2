@@ -95,6 +95,10 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         termStartDate = findViewById(R.id.term_start_date_text);
         termEndDate = findViewById(R.id.term_end_date_text);
 
+        setupDatePickers();
+        //initViewModel MUST before course list recycler view or currentTermID will be zero
+        initViewModel();
+
         //Setup RecyclerView for Course List
         RecyclerView recyclerView = findViewById(R.id.course_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -102,10 +106,9 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
 
         final CourseAdapter courseAdapter = new CourseAdapter();
         recyclerView.setAdapter(courseAdapter);
-
+        Toast.makeText(this, "currentTermID = " + currentTermID, Toast.LENGTH_SHORT).show();
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
-        // *********** getCoursesByTerm argument should not be hard coded ************
-        courseViewModel.getCoursesByTerm(9).observe(this, new Observer<List<CourseEntity>>() {
+        courseViewModel.getCoursesByTerm(currentTermID).observe(this, new Observer<List<CourseEntity>>() {
             @Override
             public void onChanged(List<CourseEntity> courseEntities) {
                 courseAdapter.setCourses(courseEntities);
@@ -157,8 +160,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
                 startActivityForResult(intent, EDIT_COURSE_REQUEST);
             }
         });
-        setupDatePickers();
-        initViewModel();
+
     }
 
     private void initViewModel(){
@@ -173,6 +175,8 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
                     editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
                     termStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                     termEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+                    //**** attempting to capture currentTermID here
+                    currentTermID = termEntity.getTerm_id();
                 }
             }
         });

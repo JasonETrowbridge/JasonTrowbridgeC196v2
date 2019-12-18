@@ -38,7 +38,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
         final CourseEntity course = courses.get(position);
         holder.textViewCourseTitle.setText(course.getCourse_title());
-        holder.textViewCourseDates.setText(course.toString());
+        holder.textViewCourseDates.setText(course.getCourse_start_date() + " - " + course.getCourse_end_date());
     }
 
     @Override

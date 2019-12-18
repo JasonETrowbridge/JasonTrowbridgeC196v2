@@ -50,17 +50,19 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     public static final String EXTRA_TERMID =
             "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
 
-
     private CourseEditorViewModel courseEditorViewModel;
     private TermViewModel termViewModel;
     private EditText editTextTitle;
     private EditText courseStartDate;
     private EditText courseEndDate;
+    private TextView courseStatus;
+    private TextView courseTermTitle;
     private Spinner courseStatusSpinner;
     private Spinner courseTermIDSpinner;
 
     private boolean newCourse;
     private int currentTermID;
+    private String currentTermTitle;
     private int currentCourseID;
 
     Button startDatePickerButton;
@@ -83,32 +85,42 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         courseStatusSpinner.setAdapter(adapter);
         courseStatusSpinner.setOnItemSelectedListener(this);
 
-        //Term Spinner setup
+        //TermID Spinner setup
         courseTermIDSpinner = findViewById(R.id.term_spinner);
-        final ArrayAdapter<TermEntity> termAdapter = new ArrayAdapter<>(this,
+        final ArrayAdapter<TermEntity> adapter2 = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item);
-        termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        courseTermIDSpinner.setAdapter(termAdapter);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseTermIDSpinner.setAdapter(adapter2);
         courseTermIDSpinner.setOnItemSelectedListener(this);
 
         termViewModel = ViewModelProviders.of(this).get(TermViewModel.class);
         termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
             @Override
             public void onChanged(List<TermEntity> termEntities) {
-               termAdapter.addAll(termEntities);
+               adapter2.addAll(termEntities);
             }
         });
 
         editTextTitle = findViewById(R.id.edit_text_title);
         courseStartDate = findViewById(R.id.course_start_date_text);
         courseEndDate = findViewById(R.id.course_end_date_text);
-        courseStatusSpinner.setAdapter(adapter);
-        courseStatusSpinner.getSelectedItemPosition();
-        courseTermIDSpinner.getSelectedItemPosition();
-
-
+        courseStatus = findViewById(R.id.course_status_text);
+        courseTermTitle = findViewById(R.id.course_term_title);
+        //courseStatusSpinner.getSelectedItemPosition();//need to extract course.getCourse_status
+        //courseTermIDSpinner.getSelectedItemPosition();
+        Toast.makeText(this, "TermID = " + EXTRA_TERMID, Toast.LENGTH_SHORT).show();
         setupDatePickers();
         initViewModel();
+    }
+
+    private int getTermSpinnerIndex(Spinner termSpinner, String myString){
+        int index = 0;
+        for (int i=0; i<termSpinner.getCount(); i++) {
+            if (termSpinner.getItemAtPosition(i).equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
     }
 
     private void initViewModel() {
@@ -124,8 +136,9 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     editTextTitle.setText(courseEntity.getCourse_title());
                     courseStartDate.setText(courseEntity.getCourse_start_date());
                     courseEndDate.setText(courseEntity.getCourse_end_date());
-                    courseStatusSpinner.getSelectedItemPosition();
-                    courseTermIDSpinner.getSelectedItemPosition();
+                    courseStatus.setText(courseEntity.getCourse_status());
+                    courseTermTitle.setText(currentTermTitle);
+
                 }
             }
         });
@@ -167,10 +180,15 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        //String status = parent.getItemAtPosition(position).toString();
-        //String termID = courseTermIDSpinner.getItemAtPosition(position).toString();
-        //String spinner_item2 = courseStatusSpinner.getItemAtPosition(position).toString();
+        //When you select a course from the courseTermIDSpinner this part
+        //captures the TermEntity by casting a single TermEntity corresponding to the selected Term
+        //Then you assign the term_id value of the termSelected to currentTermID
 
+        TermEntity termSelected = (TermEntity) courseTermIDSpinner.getSelectedItem();
+        currentTermID = termSelected.getTerm_id();
+        currentTermTitle = termSelected.getTerm_title();
+        courseTermTitle.setText(termSelected.getTerm_title());
+        //courseStatus.setText(courseStatusSpinner.getSelectedItem().toString());
     }
 
     @Override
@@ -184,13 +202,12 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         String startDate = courseStartDate.getText().toString();
         String endDate = courseEndDate.getText().toString();
         String status = courseStatusSpinner.getSelectedItem().toString();
-        currentTermID = courseTermIDSpinner.getSelectedItemPosition();
 
         if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty() || status.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title, start date, and end date, status, and termID.", Toast.LENGTH_SHORT).show();
             return;
         }
-        courseEditorViewModel.saveData(title, startDate, endDate, status, 9);
+        courseEditorViewModel.saveData(title, startDate, endDate, status, currentTermID);
         finish();
     }
 

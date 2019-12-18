@@ -47,8 +47,8 @@ public class CourseRepository {
         return courseDAO.getCourseByID(courseID);
     }
 
-    public LiveData<List<CourseEntity>> getCoursesByTerm(int courseTerm){
-        return courseDAO.getCoursesByTerm(courseTerm);
+    public LiveData<List<CourseEntity>> getCoursesByTerm(int termID){
+        return courseDAO.getCoursesByTerm(termID);
     }
 
     private static class InsertCourseAsyncTask extends AsyncTask<CourseEntity, Void, Void> {

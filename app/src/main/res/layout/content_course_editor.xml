@@ -117,11 +117,12 @@
         android:id="@+id/course_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:ems="8"
         android:hint="@string/course_status"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/course_status_label"
-        app:layout_constraintStart_toStartOf="@+id/course_end_date_text" />
+        app:layout_constraintStart_toEndOf="@+id/course_status_text" />
 
     <TextView
         android:id="@+id/course_termid_label"
@@ -129,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:text="@string/course_term_id"
+        android:text="Term"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/course_status_label" />
@@ -138,11 +139,12 @@
         android:id="@+id/term_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:ems="8"
         android:hint="@string/course_status"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
-        app:layout_constraintStart_toStartOf="@+id/course_end_date_text" />
+        app:layout_constraintStart_toEndOf="@+id/course_term_title" />
 
     <TextView
         android:id="@+id/mentor_list"
@@ -180,6 +182,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mentor_list_recycler_view" />
 
+    <TextView
+        android:id="@+id/course_status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Status"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/course_status_label"
+        app:layout_constraintStart_toStartOf="@+id/course_end_date_text" />
+
+    <TextView
+        android:id="@+id/course_term_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Term Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
+        app:layout_constraintStart_toStartOf="@+id/course_status_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

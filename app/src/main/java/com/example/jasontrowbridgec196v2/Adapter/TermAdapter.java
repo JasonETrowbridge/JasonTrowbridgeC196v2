@@ -33,7 +33,7 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.TermViewHolder
     public void onBindViewHolder(@NonNull TermViewHolder holder, int position) {
         TermEntity currentTerm = terms.get(position);
         holder.textViewTermTitle.setText(currentTerm.getTerm_title());
-        holder.textViewTermDates.setText(currentTerm.toString());
+        holder.textViewTermDates.setText(currentTerm.getTerm_start_date() + " - " + currentTerm.getTerm_end_date());
     }
 
     @Override

@@ -15,46 +15,71 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SpinnerAdapter extends ArrayAdapter<String> {
+public class SpinnerAdapter extends RecyclerView.Adapter<SpinnerAdapter.TermViewHolder> {
+    private List<TermEntity> terms = new ArrayList<>();
+    private OnItemClickListener listener;
 
-    private final LayoutInflater mInflater;
-    private final Context mContext;
-    private final List<TermEntity> terms;
-    private final int mResource;
+    @NonNull
+    @Override
+    public TermViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.terms_list, parent, false);
 
-    public SpinnerAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List objects) {
-        super(context, resource, textViewResourceId, objects);
-
-        mContext = context;
-        mInflater = LayoutInflater.from(context);
-        mResource = resource;
-        terms = objects;
+        return new TermViewHolder(itemView);
     }
 
     @Override
-    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
-        return createItemView(position, convertView, parent);
+    public void onBindViewHolder(@NonNull TermViewHolder holder, int position) {
+        TermEntity currentTerm = terms.get(position);
+        holder.textViewTermTitle.setText(currentTerm.getTerm_title());
+        holder.textViewTermDates.setText(currentTerm.toString());
     }
+
     @Override
-    public @NonNull View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
-        return createItemView(position, convertView, parent);
+    public int getItemCount() {
+        return terms.size();
     }
 
-    private View createItemView(int position, View convertView, ViewGroup parent){
-        final View view = mInflater.inflate(mResource, parent, false);
+    public void setTerms(List<TermEntity> terms) {
+        this.terms = terms;
+        notifyDataSetChanged();//*** NOT THE BEST OPTION ***
+    }
 
-        TextView termID = (TextView) view.findViewById(R.id.spinner_termid);
-        TextView termTitle = (TextView) view.findViewById(R.id.spinner_term_title);
-        TextView termDates = (TextView) view.findViewById(R.id.spinner_term_dates);
+    public TermEntity getTermAtPosition(int position) {
+        return terms.get(position);
+    }
 
-        TermEntity termData = terms.get(position);
+    class TermViewHolder extends RecyclerView.ViewHolder {
 
-        termID.setText(termData.getTerm_id());
-        termTitle.setText(termData.getTerm_title());
-        termDates.setText(termData.toString());
+        private TextView textViewTermTitle;
+        private TextView textViewTermDates;
 
-        return view;
+        public TermViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            textViewTermTitle = itemView.findViewById(R.id.text_view_term_title);
+            textViewTermDates = itemView.findViewById(R.id.text_view_term_dates);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(terms.get(position));
+                    }
+                }
+            });
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(TermEntity term);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

@@ -80,4 +80,10 @@ public class CourseEntity {
     public int getTerm_id() {
         return term_id;
     }
+
+
+    @Override
+    public String toString() {
+        return course_title;
+    }
 }
