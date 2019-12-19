@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,8 +30,7 @@ import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.TermsEditorViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
 
 import java.util.Calendar;
 import java.util.List;
@@ -55,7 +53,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     public static final String EXTRA_TERMID =
             "com.example.jasontrowbridgec196v2.TERMID";
 
-    private TermsEditorViewModel termsEditorViewModel;
+    private TermEditorViewModel termEditorViewModel;
     private CourseViewModel courseViewModel;
     public static int numTerms;
     private int position;
@@ -164,10 +162,10 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     }
 
     private void initViewModel(){
-        termsEditorViewModel = ViewModelProviders.of(this)
-                .get(TermsEditorViewModel.class);
+        termEditorViewModel = ViewModelProviders.of(this)
+                .get(TermEditorViewModel.class);
 
-        termsEditorViewModel.mLiveTerm.observe(this, new Observer<TermEntity>(){
+        termEditorViewModel.mLiveTerm.observe(this, new Observer<TermEntity>(){
             @Override
             public void onChanged(@Nullable TermEntity termEntity){
                 Intent intent = getIntent();
@@ -175,8 +173,6 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
                     editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
                     termStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
                     termEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
-                    //**** attempting to capture currentTermID here
-                    currentTermID = termEntity.getTerm_id();
                 }
             }
         });
@@ -189,7 +185,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             setTitle("Edit Term");
             int termID = extras.getInt(EXTRA_ID);
             this.currentTermID = termID;
-            termsEditorViewModel.loadData(termID);
+            termEditorViewModel.loadData(termID);
         }
     }
 
@@ -236,6 +232,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             data.putExtra(EXTRA_ID, id);
         }
         setResult(RESULT_OK, data);
+        termEditorViewModel.saveData(title, startDate, endDate);
         finish();
     }
 

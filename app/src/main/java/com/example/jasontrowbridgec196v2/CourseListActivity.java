@@ -115,7 +115,7 @@ public class CourseListActivity extends AppCompatActivity {
             }
         });
     }
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,7 +126,7 @@ public class CourseListActivity extends AppCompatActivity {
             String status = data.getStringExtra(CourseEditorActivity.EXTRA_STATUS);
             //Not sure this is how I should get termID?
             int termID = data.getIntExtra("TermID",Integer.parseInt(CourseEditorActivity.EXTRA_TERMID));
-
+            Toast.makeText(this, "Adding course with TermID = " + termID, Toast.LENGTH_SHORT).show();
             CourseEntity course = new CourseEntity(title, startDate, endDate, status, termID);
             courseViewModel.insertCourse(course);
 
@@ -154,7 +154,7 @@ public class CourseListActivity extends AppCompatActivity {
             Toast.makeText(this, "Course NOT Saved!", Toast.LENGTH_SHORT).show();
         }
     }
-
+*/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

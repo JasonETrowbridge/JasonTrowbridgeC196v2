@@ -1,6 +1,7 @@
 package com.example.jasontrowbridgec196v2.ViewModel;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,7 +16,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 
-public class TermsEditorViewModel extends AndroidViewModel {
+public class TermEditorViewModel extends AndroidViewModel {
     public MutableLiveData<TermEntity> mLiveTerm =
             new MutableLiveData<>();
     private TermRepository termRepository;
@@ -24,7 +25,7 @@ public class TermsEditorViewModel extends AndroidViewModel {
 
 
 
-    public TermsEditorViewModel(@NonNull Application application) {
+    public TermEditorViewModel(@NonNull Application application) {
             super(application);
             termRepository = new TermRepository(application);
             allTerms = termRepository.getAllTerms();
@@ -38,6 +39,22 @@ public class TermsEditorViewModel extends AndroidViewModel {
                 mLiveTerm.postValue(term);
             }
         });
+    }
+    public void saveData(String termTitle, String startDate, String endDate){
+        TermEntity term = mLiveTerm.getValue();
+
+        if (term == null){
+            if (TextUtils.isEmpty(termTitle.trim())){
+                return;
+            }
+            term = new TermEntity(termTitle.trim(), startDate.trim(), endDate.trim());
+        } else {
+            term.setTerm_title(termTitle.trim());
+            term.setTerm_start_date(startDate.trim());
+            term.setTerm_end_date(endDate.trim());
+
+        }
+        termRepository.insertTerm(term);
     }
 
     public LiveData<List<TermEntity>> getAllTerms(){

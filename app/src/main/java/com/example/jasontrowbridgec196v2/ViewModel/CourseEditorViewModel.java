@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseRepository;
+import com.example.jasontrowbridgec196v2.Database.TermEntity;
+import com.example.jasontrowbridgec196v2.Database.TermRepository;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -19,7 +21,6 @@ public class CourseEditorViewModel extends AndroidViewModel {
     private LiveData<List<CourseEntity>> allCourses;
     public MutableLiveData<CourseEntity> mLiveCourse = new MutableLiveData<>();
     private CourseRepository courseRepository;
-
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
@@ -28,6 +29,8 @@ public class CourseEditorViewModel extends AndroidViewModel {
         courseRepository = new CourseRepository(application);
         allCourses = courseRepository.getAllCourses();
     }
+
+
 
     public void loadData(final int courseID){
         executor.execute(new Runnable(){
