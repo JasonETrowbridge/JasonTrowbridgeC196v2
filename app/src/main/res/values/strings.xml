@@ -37,6 +37,14 @@
     <string name="course_term_id">Term ID</string>
     <string name="menu_delete_all_courses">Delete All Courses</string>
     <string name="title_activity_course_list">Course List</string>
+    <string name="assessment_name">Assessment Name</string>
+    <string name="note_title">Note Title</string>
+    <string name="phone_label">Phone</string>
+    <string name="email_label">Email</string>
+    <string name="email_address">Email Address</string>
+    <string name="mentor_email_label">Mentor Email</string>
+    <string name="mentor_phone_label">Mentor Phone</string>
+    <string name="phone_number">Phone Number</string>
 
 
     <string-array name="status">

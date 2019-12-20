@@ -9,6 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".NoteEditorActivity"></activity>
+        <activity android:name=".NoteListActivity" />
+        <activity android:name=".MentorEditorActivity" />
+        <activity android:name=".MentorListActivity" />
         <activity
             android:name=".CourseEditorActivity"
             android:label="Course Editor"
@@ -26,7 +30,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".TermEditorActivity"
             android:label="Term Editor"
@@ -54,7 +57,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
     </application>
 
 </manifest>
