@@ -33,6 +33,22 @@ public class AssessmentEntity {
         this.assessment_id = assessment_id;
     }
 
+    public void setAssessment_name(String assessment_name) {
+        this.assessment_name = assessment_name;
+    }
+
+    public void setAssessment_date(String assessment_date) {
+        this.assessment_date = assessment_date;
+    }
+
+    public void setAssessment_type(String assessment_type) {
+        this.assessment_type = assessment_type;
+    }
+
+    public void setCourse_id(int course_id) {
+        this.course_id = course_id;
+    }
+
     //Getters
 
     public int getAssessment_id() {

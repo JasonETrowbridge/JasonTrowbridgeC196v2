@@ -94,7 +94,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         //Toast.makeText(this ,"currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
 
 
-
         //Status Spinner setup
         courseStatusSpinner = findViewById(R.id.course_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.status, android.R.layout.simple_spinner_item);
@@ -164,17 +163,19 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     //*** need to be able to take the getTerm_id value and convert that to
                     //the corresponding TermEntity getTerm_title
                     if (courseTermTitleTextView != null) {
-                        courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermID));
-                        //courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, courseTermTitleTextView.getText().toString()));
+                        //courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermID));
+                        courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, courseTermTitleTextView.getText().toString()));
                     }
                 }
             }
         });
 
         Bundle extras = getIntent().getExtras();
-        int termID = extras.getInt(EXTRA_TERMID);
-        this.currentTermID = termID;
-        termEditorViewModel.loadData(termID);
+        if (extras != null) {
+            int termID = extras.getInt(EXTRA_TERMID);
+            this.currentTermID = termID;
+            termEditorViewModel.loadData(termID);
+        }
     }
 
     private void initViewModel() {
@@ -199,9 +200,9 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     // courseTermTitleTextView.setText(currentTermTitle);
 
                     //Sets initial selection on courseStatusSpinner when editing existing course
-                   if (courseStatusTextView != null) {
-                       courseStatusSpinner.setSelection(getSpinnerIndex(courseStatusSpinner, courseStatusTextView.getText().toString()));
-                   }
+                    if (courseStatusTextView != null) {
+                        courseStatusSpinner.setSelection(getSpinnerIndex(courseStatusSpinner, courseStatusTextView.getText().toString()));
+                    }
                 }
             }
         });

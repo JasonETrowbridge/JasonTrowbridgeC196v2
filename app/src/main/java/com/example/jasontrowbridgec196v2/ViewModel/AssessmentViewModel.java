@@ -40,7 +40,7 @@ public class AssessmentViewModel extends AndroidViewModel {
     public AssessmentEntity getAssessmentByID(int assessmentID){
         return repository.getAssessmentByID(assessmentID);
     }
-    public LiveData<List<AssessmentEntity>> getAssessmentByTerm(int currentCourseID){
+    public LiveData<List<AssessmentEntity>> getAssessmentByCourse(int currentCourseID){
         return repository.getAssessmentByCourse(currentCourseID);
     }
     public void setCurrentCourse(int currentCourse){

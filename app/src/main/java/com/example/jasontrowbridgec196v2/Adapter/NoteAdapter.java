@@ -62,7 +62,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         }
     }
 
-    public void setCourses(List<NoteEntity> notes) {
+    public void setNotes(List<NoteEntity> notes) {
         this.notes = notes;
         notifyDataSetChanged();//*** NOT THE BEST OPTION ***
     }

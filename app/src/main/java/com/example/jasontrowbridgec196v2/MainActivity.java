@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.nav_assessments:
                 Toast.makeText(this, "Assessments selected", Toast.LENGTH_SHORT).show();
+                Intent intent3 = new Intent(MainActivity.this, AssessmentListActivity.class);
+                startActivity(intent3);
                 return true;
             case R.id.nav_settings:
                 Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
@@ -82,13 +84,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
+    public void showAssessmentList(View view) {
+        Intent intent = new Intent(this, AssessmentListActivity.class);
+        startActivity(intent);
+    }
 
-        public void showAssessmentList(View view) {
-            Intent intent = new Intent(this, AssessmentListActivity.class);
-            startActivity(intent);
-        }
-    */
     public void showCourseList(View view) {
         Intent intent = new Intent(MainActivity.this, CourseListActivity.class);
         startActivity(intent);

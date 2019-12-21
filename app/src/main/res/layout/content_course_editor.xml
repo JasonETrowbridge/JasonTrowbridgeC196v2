@@ -150,7 +150,7 @@
         android:id="@+id/mentor_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="25dp"
         android:text="@string/mentor_list"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
@@ -183,6 +183,42 @@
         app:layout_constraintTop_toBottomOf="@+id/mentor_list_recycler_view" />
 
     <TextView
+        android:id="@+id/assessment_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/assessment_list"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_mentor_button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/assessment_list_recycler_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/assessments_list"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/assessment_list" >
+
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/add_assessment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#2196F3"
+        android:layout_marginTop="24dp"
+        android:text="@string/add_assessment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/assessment_list_recycler_view" />
+
+    <TextView
         android:id="@+id/course_status_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -199,6 +235,5 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
         app:layout_constraintStart_toStartOf="@+id/course_status_text" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,6 +30,19 @@ public class NoteEntity {
         this.note_id = note_id;
     }
 
+    public void setNote_title(String note_title) {
+        this.note_title = note_title;
+    }
+
+    public void setNote_text(String note_text) {
+        this.note_text = note_text;
+    }
+
+    public void setAssessment_id(int assessment_id) {
+        this.assessment_id = assessment_id;
+    }
+
+    //Getters
     public int getNote_id() {
         return note_id;
     }

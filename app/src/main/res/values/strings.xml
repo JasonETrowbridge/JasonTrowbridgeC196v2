@@ -37,7 +37,6 @@
     <string name="course_term_id">Term ID</string>
     <string name="menu_delete_all_courses">Delete All Courses</string>
     <string name="title_activity_course_list">Course List</string>
-    <string name="assessment_name">Assessment Name</string>
     <string name="note_title">Note Title</string>
     <string name="phone_label">Phone</string>
     <string name="email_label">Email</string>
@@ -45,12 +44,27 @@
     <string name="mentor_email_label">Mentor Email</string>
     <string name="mentor_phone_label">Mentor Phone</string>
     <string name="phone_number">Phone Number</string>
+    <string name="assessment_list">Assessment List</string>
+    <string name="add_assessment">Add Assessment</string>
+    <string name="due_button">Due</string>
+    <string name="note_list">Note List</string>
+    <string name="assessment_type">Type</string>
+    <string name="assessment_name">Name</string>
+    <string name="menu_delete_all_assessments">Delete All Assessments</string>
+    <string name="menu_delete_all_mentors">Delete All Mentors</string>
+    <string name="menu_delete_all_notes">Delete All Notes</string>
 
 
     <string-array name="status">
-        <item>Plan To Take</item>
-        <item>In Progress</item>
-        <item>Completed</item>
-        <item>Dropped</item>
+    <item>Plan To Take</item>
+    <item>In Progress</item>
+    <item>Completed</item>
+    <item>Dropped</item>
     </string-array>
+
+    <string-array name="type">
+        <item>Objective</item>
+        <item>Performance</item>
+    </string-array>
+
 </resources>
