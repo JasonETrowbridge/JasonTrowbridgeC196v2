@@ -14,6 +14,7 @@ import java.util.List;
 public class TermViewModel extends AndroidViewModel {
     private TermRepository repository;
     private LiveData<List<TermEntity>> allTerms;
+    private LiveData<List<TermEntity>> allTermsSpinner;
 
     public TermViewModel(@NonNull Application application) {
         super(application);
@@ -35,6 +36,10 @@ public class TermViewModel extends AndroidViewModel {
 
     public LiveData<List<TermEntity>> getAllTerms() {
         return allTerms;
+    }
+
+    public LiveData<List<TermEntity>> getAllTermsSpinner() {
+        return allTermsSpinner;
     }
 
     public TermEntity getTermByID(int termID){

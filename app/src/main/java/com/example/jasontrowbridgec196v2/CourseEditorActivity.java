@@ -8,6 +8,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -26,16 +29,31 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jasontrowbridgec196v2.Adapter.AssessmentAdapter;
+import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
+import com.example.jasontrowbridgec196v2.Adapter.MentorAdapter;
+import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.MentorEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
+import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.MentorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
+    public static final int ADD_MENTOR_REQUEST = 1;
+    public static final int EDIT_MENTOR_REQUEST = 2;
+    public static final int ADD_ASSESSMENT_REQUEST = 3;
+    public static final int EDIT_ASSESSMENT_REQUEST = 4;
+
     public static final String EXTRA_ID =
             "com.example.jasontrowbridgec196v2.EXTRA_ID";
     public static final String EXTRA_TITLE =
@@ -53,6 +71,10 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
     private CourseEditorViewModel courseEditorViewModel;
     private TermViewModel termViewModel;
+    private TermViewModel termViewModel2;
+    private MentorViewModel mentorViewModel;
+    private AssessmentViewModel assessmentViewModel;
+    private MentorAdapter mentorAdapter;
 
     //experiment
     private TermEditorViewModel termEditorViewModel;
@@ -90,9 +112,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         setupDatePickers();
 
         initViewModel();
-        initViewModel2();
-        //Toast.makeText(this ,"currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
-
 
         //Status Spinner setup
         courseStatusSpinner = findViewById(R.id.course_spinner);
@@ -101,10 +120,9 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         courseStatusSpinner.setAdapter(adapter);
         courseStatusSpinner.setOnItemSelectedListener(this);
 
-
         //TermID Spinner setup
         courseTermIDSpinner = findViewById(R.id.term_spinner);
-        final ArrayAdapter<TermEntity> adapter2 = new ArrayAdapter<>(this,
+        final ArrayAdapter<TermEntity> adapter2 = new ArrayAdapter<TermEntity>(this,
                 android.R.layout.simple_spinner_item);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseTermIDSpinner.setAdapter(adapter2);
@@ -114,15 +132,137 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
             @Override
             public void onChanged(List<TermEntity> termEntities) {
-                adapter2.addAll(termEntities);
+               adapter2.addAll(termEntities);
             }
         });
+
+        initViewModel2();
 
         courseTitleEditText = findViewById(R.id.edit_text_title);
         courseStartDateEditText = findViewById(R.id.course_start_date_text);
         courseEndDateEditText = findViewById(R.id.course_end_date_text);
         courseStatusTextView = findViewById(R.id.course_status_text);
         courseTermTitleTextView = findViewById(R.id.course_term_title);
+
+        //Setup RecyclerView for Mentor List
+        RecyclerView recyclerView = findViewById(R.id.mentor_list_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        final MentorAdapter mentorAdapter = new MentorAdapter();
+        recyclerView.setAdapter(mentorAdapter);
+        mentorViewModel = ViewModelProviders.of(this).get(MentorViewModel.class);
+        mentorViewModel.getMentorByCourse(currentCourseID).observe(this, new Observer<List<MentorEntity>>() {
+            @Override
+            public void onChanged(List<MentorEntity> mentorEntities) {
+                mentorAdapter.setMentors(mentorEntities);
+            }
+        });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+            @Override
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CourseEditorActivity.this);
+                builder.setMessage("Are you sure you want to delete this mentor?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mentorViewModel.deleteMentor(mentorAdapter.getMentorAtPosition(viewHolder.getAdapterPosition()));
+                                Toast.makeText(CourseEditorActivity.this, "Mentor was deleted!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(CourseEditorActivity.this, CourseListActivity.class);
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(CourseEditorActivity.this, CourseListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
+        //Selects Mentor and switches to MentorEditorActivity
+        mentorAdapter.setOnItemClickListener(new MentorAdapter.OnItemClickListener() {
+            //Selects item clicked to be edited in MentorEditorActivity and populates fields with selected term data
+            @Override
+            public void onItemClick(MentorEntity mentor) {
+                Intent intent = new Intent(CourseEditorActivity.this, MentorEditorActivity.class);
+                intent.putExtra(MentorEditorActivity.EXTRA_ID, mentor.getMentor_id());
+                intent.putExtra(MentorEditorActivity.EXTRA_NAME, mentor.getMentor_name());
+                intent.putExtra(MentorEditorActivity.EXTRA_PHONE, mentor.getMentor_phone());
+                intent.putExtra(MentorEditorActivity.EXTRA_EMAIL, mentor.getMentor_email());
+                intent.putExtra(MentorEditorActivity.EXTRA_COURSEID, mentor.getCourse_id());
+                startActivityForResult(intent, EDIT_MENTOR_REQUEST);
+            }
+        });
+
+        //Setup RecyclerView for Mentor List
+        RecyclerView recyclerView2 = findViewById(R.id.assessment_list_recycler_view);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView2.setHasFixedSize(true);
+
+        final AssessmentAdapter assessmentAdapter = new AssessmentAdapter();
+        recyclerView2.setAdapter(assessmentAdapter);
+        assessmentViewModel = ViewModelProviders.of(this).get(AssessmentViewModel.class);
+        assessmentViewModel.getAssessmentByCourse(currentCourseID).observe(this, new Observer<List<AssessmentEntity>>() {
+            @Override
+            public void onChanged(List<AssessmentEntity> assessmentEntities) {
+                assessmentAdapter.setAssessments(assessmentEntities);
+            }
+        });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView2, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+            @Override
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CourseEditorActivity.this);
+                builder.setMessage("Are you sure you want to delete this assessment?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                assessmentViewModel.deleteAssessment(assessmentAdapter.getAssessmentAtPosition(viewHolder.getAdapterPosition()));
+                                Toast.makeText(CourseEditorActivity.this, "Assessment was deleted!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(CourseEditorActivity.this, CourseListActivity.class);
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(CourseEditorActivity.this, CourseListActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        }).attachToRecyclerView(recyclerView2);
+
+        //Selects Assessment and switches to AssessmentEditorActivity
+        assessmentAdapter.setOnItemClickListener(new AssessmentAdapter.OnItemClickListener() {
+            //Selects item clicked to be edited in MentorEditorActivity and populates fields with selected term data
+            @Override
+            public void onItemClick(AssessmentEntity assessment) {
+                Intent intent = new Intent(CourseEditorActivity.this, AssessmentEditorActivity.class);
+                intent.putExtra(AssessmentEditorActivity.EXTRA_ID, assessment.getAssessment_id());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_NAME, assessment.getAssessment_name());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_DUE_DATE, assessment.getAssessment_date());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_TYPE,assessment.getAssessment_type());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_COURSEID, assessment.getCourse_id());
+                startActivityForResult(intent, EDIT_ASSESSMENT_REQUEST);
+            }
+        });
 
     }
 
@@ -139,7 +279,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     private int getSpinnerIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myString)) {
+            if (spinner.getItemAtPosition(i).equals(myString.trim())) {
                 index = i;
             }
         }
@@ -158,14 +298,17 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 Intent intent = getIntent();
                 if (termEntity != null && intent.hasExtra(EXTRA_ID)) {
                     courseTermTitleTextView.setText(String.valueOf(termEntity.getTerm_title()));
-                    //currentTermTitle = courseTermTitleTextView.getText().toString();
+                    courseTermIDSpinner.getCount();
+                    currentTermTitle = courseTermTitleTextView.getText().toString();
                     //currentTermTitleID = String.valueOf(termEntity.getTerm_id());
                     //*** need to be able to take the getTerm_id value and convert that to
                     //the corresponding TermEntity getTerm_title
                     if (courseTermTitleTextView != null) {
-                        //courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermID));
-                        courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, courseTermTitleTextView.getText().toString()));
+                        courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermTitle));
+
+
                     }
+
                 }
             }
         });
