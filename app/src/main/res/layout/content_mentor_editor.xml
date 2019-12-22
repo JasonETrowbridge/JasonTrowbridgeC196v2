@@ -41,7 +41,7 @@
         android:id="@+id/phone_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:autofillHints="@string/mentor_phone_label"
         android:text="@string/mentor_phone_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -52,10 +52,10 @@
         android:id="@+id/edit_text_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="8"
-        android:inputType="textPersonName"
-        android:text="@string/phone_number"
         android:autofillHints="@string/phone_number"
+        android:ems="8"
+        android:inputType="phone"
+        android:hint="@string/phone_hint"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/phone_label"
         app:layout_constraintStart_toStartOf="@+id/edit_text_name"
@@ -65,22 +65,51 @@
         android:id="@+id/email_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/mentor_email_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="@+id/phone_label"
         app:layout_constraintTop_toBottomOf="@+id/phone_label" />
 
     <EditText
-        android:id="@+id/edit_email_address"
+        android:id="@+id/edit_text_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="8"
+        android:autofillHints="Email Address"
+        android:inputType="textPersonName"
+        android:hint="@string/email_address"
+        app:layout_constraintBottom_toBottomOf="@+id/email_label"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_phone"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_phone" />
+
+    <TextView
+        android:id="@+id/assessment_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Course"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toStartOf="@+id/email_label"
+        app:layout_constraintTop_toBottomOf="@+id/email_label" />
+
+    <TextView
+        android:id="@+id/assessment_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="8"
         android:inputType="textPersonName"
+        android:hint="Course Title"
+        app:layout_constraintBottom_toBottomOf="@+id/assessment_label"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_email" />
 
-        android:text="@string/email_address"
-        app:layout_constraintBottom_toBottomOf="@+id/email_label"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_phone"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_phone" />
+    <Spinner
+        android:id="@+id/mentor_course_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="8"
+        app:layout_constraintBottom_toBottomOf="@+id/assessment_name_text_view"
+        app:layout_constraintStart_toEndOf="@+id/assessment_name_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,8 +51,8 @@ import java.util.List;
 public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     public static final int ADD_MENTOR_REQUEST = 1;
     public static final int EDIT_MENTOR_REQUEST = 2;
-    public static final int ADD_ASSESSMENT_REQUEST = 3;
-    public static final int EDIT_ASSESSMENT_REQUEST = 4;
+    public static final int ADD_ASSESSMENT_REQUEST = 1;
+    public static final int EDIT_ASSESSMENT_REQUEST = 2;
 
     public static final String EXTRA_ID =
             "com.example.jasontrowbridgec196v2.EXTRA_ID";
@@ -66,6 +66,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             "com.example.jasontrowbridgec196v2.EXTRA_STATUS";
     public static final String EXTRA_TERMID =
             "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
+
     public static final String EXTRA_TERM_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TERM_TITLE";
 
@@ -98,6 +99,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
     Button startDatePickerButton;
     Button endDatePickerButton;
+    Button addMentorButton;
+    Button addAssessmentButton;
     private TextView datePickerView;
 
     @Override
@@ -112,6 +115,26 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         setupDatePickers();
 
         initViewModel();
+
+        //Opens MentorEditorActivity when add_mentor_button is selected
+        Button buttonAddMentor = findViewById(R.id.add_mentor_button);
+        buttonAddMentor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CourseEditorActivity.this, MentorEditorActivity.class);
+                startActivityForResult(intent, ADD_MENTOR_REQUEST);
+            }
+        });
+
+        //Opens AssessmentEditorActivity when add_assessment_button is selected
+        Button buttonAddAssessment = findViewById(R.id.add_assessment_button);
+        buttonAddAssessment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CourseEditorActivity.this, AssessmentEditorActivity.class);
+                startActivityForResult(intent, ADD_ASSESSMENT_REQUEST);
+            }
+        });
 
         //Status Spinner setup
         courseStatusSpinner = findViewById(R.id.course_spinner);
@@ -144,6 +167,14 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         courseStatusTextView = findViewById(R.id.course_status_text);
         courseTermTitleTextView = findViewById(R.id.course_term_title);
 
+        initMentorRecyclerView();
+        initAssessmentRecyclerView();
+
+
+
+    }
+
+    private void initMentorRecyclerView(){
         //Setup RecyclerView for Mentor List
         RecyclerView recyclerView = findViewById(R.id.mentor_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -203,8 +234,10 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 startActivityForResult(intent, EDIT_MENTOR_REQUEST);
             }
         });
+    }
 
-        //Setup RecyclerView for Mentor List
+    private void initAssessmentRecyclerView() {
+        //Setup RecyclerView for Assessment List
         RecyclerView recyclerView2 = findViewById(R.id.assessment_list_recycler_view);
         recyclerView2.setLayoutManager(new LinearLayoutManager(this));
         recyclerView2.setHasFixedSize(true);
@@ -263,7 +296,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 startActivityForResult(intent, EDIT_ASSESSMENT_REQUEST);
             }
         });
-
     }
 
     private int getSpinnerIndex(Spinner spinner, int myInt) {

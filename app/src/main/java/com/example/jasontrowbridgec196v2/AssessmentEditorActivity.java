@@ -98,6 +98,10 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
+
+
+
+
         //Opens NoteEditorActivity when add_note_button is selected
         Button buttonAddNote = findViewById(R.id.add_note_button);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
@@ -108,10 +112,46 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             }
         });
 
+        assessmentNameEditText = findViewById(R.id.edit_text_name);
+        assessmentDateEditText = findViewById(R.id.assessment_due_date_text);
+        assessmentTypeTextView = findViewById(R.id.assessment_type_text);
+        assessmentCourseTitleTextView = findViewById(R.id.course_title_text);
+
         setupDatePickers();
+
         //initViewModel MUST before course list recycler view or currentTermID will be zero
         initViewModel();
+
+        initNoteRecyclerView();
+
+        //Type Spinner setup
+        assessmentTypeSpinner = findViewById(R.id.assessment_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        assessmentTypeSpinner.setAdapter(adapter);
+        assessmentTypeSpinner.setOnItemSelectedListener(this);
+
+        //CourseID Spinner setup
+        assessmentCourseIDSpinner = findViewById(R.id.assessment_course_spinner);
+        final ArrayAdapter<CourseEntity> adapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        assessmentCourseIDSpinner.setAdapter(adapter2);
+        assessmentCourseIDSpinner.setOnItemSelectedListener(this);
+
+        courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
+        courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
+            @Override
+            public void onChanged(List<CourseEntity> courseEntities) {
+                adapter2.addAll(courseEntities);
+            }
+        });
+
         initViewModel2();
+
+    }
+
+    private void initNoteRecyclerView(){
 
         //Setup RecyclerView for Note List
         RecyclerView recyclerView = findViewById(R.id.note_list_recycler_view);
@@ -173,36 +213,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
-
-        //Type Spinner setup
-        assessmentTypeSpinner = findViewById(R.id.assessment_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        assessmentTypeSpinner.setAdapter(adapter);
-        assessmentTypeSpinner.setOnItemSelectedListener(this);
-
-        assessmentNameEditText = findViewById(R.id.edit_text_name);
-        assessmentDateEditText = findViewById(R.id.assessment_due_date_text);
-        assessmentTypeTextView = findViewById(R.id.assessment_type_text);
-
-        //CourseID Spinner setup
-        assessmentCourseIDSpinner = findViewById(R.id.assessment_course_spinner);
-        final ArrayAdapter<CourseEntity> adapter2 = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        assessmentCourseIDSpinner.setAdapter(adapter2);
-        assessmentCourseIDSpinner.setOnItemSelectedListener(this);
-
-        courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
-        courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
-            @Override
-            public void onChanged(List<CourseEntity> courseEntities) {
-                adapter2.addAll(courseEntities);
-            }
-        });
     }
-
-
 
     private int getSpinnerIndex(Spinner spinner, int myInt) {
         int index = 0;
@@ -228,7 +239,6 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     private void initViewModel2() {
         courseEditorViewModel = ViewModelProviders.of(this)
                 .get(CourseEditorViewModel.class);
-
 
             courseEditorViewModel.mLiveCourse.observe(this, new Observer<CourseEntity>() {
 
@@ -315,6 +325,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             return;
         }
 
+        /*
         Intent data = new Intent();
         data.putExtra(EXTRA_NAME, name);
         data.putExtra(EXTRA_DUE_DATE, dueDate);
@@ -325,6 +336,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             data.putExtra(EXTRA_ID, id);
         }
         setResult(RESULT_OK, data);
+         */
         assessmentEditorViewModel.saveData(name, dueDate, type, currentCourseID);
         finish();
     }
@@ -351,7 +363,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(AssessmentEditorActivity.this, AssessmentListActivity.class);
+                        Intent intent = new Intent(AssessmentEditorActivity.this, CourseListActivity.class);
                         startActivity(intent);
                     }
                 });

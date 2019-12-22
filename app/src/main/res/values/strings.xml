@@ -53,6 +53,8 @@
     <string name="menu_delete_all_assessments">Delete All Assessments</string>
     <string name="menu_delete_all_mentors">Delete All Mentors</string>
     <string name="menu_delete_all_notes">Delete All Notes</string>
+    <string name="phone_hint">(666) 555-1212</string>
+    <string name="note_text">Note Text</string>
 
 
     <string-array name="status">
