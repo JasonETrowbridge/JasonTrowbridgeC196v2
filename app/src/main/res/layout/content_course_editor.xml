@@ -23,7 +23,7 @@
         app:layout_goneMarginTop="40dp" />
 
     <EditText
-        android:id="@+id/edit_text_title"
+        android:id="@+id/course_title_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/courseTitleLabel" />
 
     <EditText
-        android:id="@+id/course_start_date_text"
+        android:id="@+id/course_start_date_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="sta"
@@ -57,7 +57,7 @@
         android:inputType="date"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/course_start_date_label"
-        app:layout_constraintStart_toStartOf="@+id/edit_text_title"
+        app:layout_constraintStart_toStartOf="@+id/course_title_edit_text"
         tools:autofillHints="@string/start_date" />
 
     <Button
@@ -67,8 +67,8 @@
         android:layout_marginStart="16dp"
         android:backgroundTint="#2196F3"
         android:text="@string/start_button"
-        app:layout_constraintBottom_toBottomOf="@id/course_start_date_text"
-        app:layout_constraintStart_toEndOf="@id/course_start_date_text" />
+        app:layout_constraintBottom_toBottomOf="@id/course_start_date_edit_text"
+        app:layout_constraintStart_toEndOf="@id/course_start_date_edit_text" />
 
     <TextView
         android:id="@+id/course_end_date_label"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/course_start_date_label" />
 
     <EditText
-        android:id="@+id/course_end_date_text"
+        android:id="@+id/course_end_date_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="@string/end_date"
@@ -90,7 +90,7 @@
         android:hint="@string/end_date"
         android:inputType="date"
         app:layout_constraintBottom_toBottomOf="@+id/course_end_date_label"
-        app:layout_constraintStart_toStartOf="@+id/course_start_date_text" />
+        app:layout_constraintStart_toStartOf="@+id/course_start_date_edit_text" />
 
     <Button
         android:id="@+id/end_date_picker"
@@ -99,8 +99,8 @@
         android:layout_marginStart="16dp"
         android:backgroundTint="#2196F3"
         android:text="@string/end_button"
-        app:layout_constraintBottom_toBottomOf="@+id/course_end_date_text"
-        app:layout_constraintStart_toEndOf="@+id/course_end_date_text" />
+        app:layout_constraintBottom_toBottomOf="@+id/course_end_date_edit_text"
+        app:layout_constraintStart_toEndOf="@+id/course_end_date_edit_text" />
 
     <TextView
         android:id="@+id/course_status_label"
@@ -117,7 +117,7 @@
         android:id="@+id/course_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:ems="8"
         android:hint="@string/course_status"
         android:inputType="textPersonName"
@@ -139,12 +139,12 @@
         android:id="@+id/term_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="8dp"
         android:ems="8"
         android:hint="@string/course_status"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
-        app:layout_constraintStart_toEndOf="@+id/course_term_title" />
+        app:layout_constraintStart_toEndOf="@+id/course_term_title_text_view" />
 
     <TextView
         android:id="@+id/mentor_list"
@@ -178,6 +178,7 @@
         android:backgroundTint="#2196F3"
         android:layout_marginTop="24dp"
         android:text="@string/add_mentor"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mentor_list_recycler_view" />
@@ -214,6 +215,7 @@
         android:backgroundTint="#2196F3"
         android:layout_marginTop="24dp"
         android:text="@string/add_assessment"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/assessment_list_recycler_view" />
@@ -225,10 +227,10 @@
         android:text="Course Status"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/course_status_label"
-        app:layout_constraintStart_toStartOf="@+id/course_end_date_text" />
+        app:layout_constraintStart_toStartOf="@+id/course_end_date_edit_text" />
 
     <TextView
-        android:id="@+id/course_term_title"
+        android:id="@+id/course_term_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Course Term Title"

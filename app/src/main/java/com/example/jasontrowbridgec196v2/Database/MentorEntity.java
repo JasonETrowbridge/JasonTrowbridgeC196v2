@@ -67,4 +67,10 @@ public class MentorEntity {
     public int getCourse_id() {
         return course_id;
     }
+
+
+    @Override
+    public String toString() {
+        return mentor_name;
+    }
 }

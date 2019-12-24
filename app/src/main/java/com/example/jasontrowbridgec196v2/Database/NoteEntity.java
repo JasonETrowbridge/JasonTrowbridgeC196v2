@@ -58,4 +58,9 @@ public class NoteEntity {
     public int getAssessment_id() {
         return assessment_id;
     }
+
+    @Override
+    public String toString() {
+        return note_title;
+    }
 }

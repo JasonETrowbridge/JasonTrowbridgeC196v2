@@ -24,7 +24,7 @@
         app:layout_goneMarginTop="40dp" />
 
     <EditText
-        android:id="@+id/edit_title_text"
+        android:id="@+id/note_title_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:autofillHints="@string/note_text"
         android:hint="@string/note_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -60,7 +60,7 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="@+id/text_label"
-        app:layout_constraintStart_toStartOf="@+id/edit_title_text" />
+        app:layout_constraintStart_toStartOf="@+id/note_title_edit_text" />
 
     <TextView
         android:id="@+id/assessment_label"
@@ -74,12 +74,13 @@
         app:layout_constraintTop_toBottomOf="@+id/text_label" />
 
     <TextView
-        android:id="@+id/assessment_name_text_view"
+        android:id="@+id/note_assessment_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="8"
+        android:ems="6"
         android:hint="Assessment Name"
         android:inputType="textPersonName"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/assessment_label"
         app:layout_constraintStart_toStartOf="@+id/note_text_edit_Text" />
 
@@ -89,8 +90,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ems="8"
-        app:layout_constraintBottom_toBottomOf="@+id/assessment_name_text_view"
-        app:layout_constraintStart_toEndOf="@+id/assessment_name_text_view" />
+        app:layout_constraintBottom_toBottomOf="@+id/note_assessment_name_text_view"
+        app:layout_constraintStart_toEndOf="@+id/note_assessment_name_text_view" />
 
 
 

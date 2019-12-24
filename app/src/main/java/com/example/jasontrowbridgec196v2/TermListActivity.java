@@ -38,6 +38,11 @@ public class TermListActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terms_list);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         FloatingActionButton buttonAddTerm = findViewById(R.id.fab_add_term);
         buttonAddTerm.setOnClickListener(new View.OnClickListener() {
@@ -47,8 +52,6 @@ public class TermListActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_TERM_REQUEST);
             }
         });
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -101,7 +104,7 @@ public class TermListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(TermEntity term) {
                 Intent intent = new Intent(TermListActivity.this, TermEditorActivity.class);
-                intent.putExtra(TermEditorActivity.EXTRA_ID, term.getTerm_id());
+                intent.putExtra(TermEditorActivity.EXTRA_TERMID, term.getTerm_id());
                 intent.putExtra(TermEditorActivity.EXTRA_TITLE, term.getTerm_title());
                 intent.putExtra(TermEditorActivity.EXTRA_START_DATE, term.getTerm_start_date());
                 intent.putExtra(TermEditorActivity.EXTRA_END_DATE, term.getTerm_end_date());
@@ -109,45 +112,88 @@ public class TermListActivity extends AppCompatActivity {
             }
         });
     }
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
-            String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
-            String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
 
-            TermEntity term = new TermEntity(title, startDate, endDate);
-            termViewModel.insertTerm(term);
+    /*
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK) {
+                String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
+                String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
+                String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
 
-            Toast.makeText(this, "Term saved!", Toast.LENGTH_SHORT).show();
+                TermEntity term = new TermEntity(title, startDate, endDate);
+                termViewModel.insertTerm(term);
 
-        } else if (requestCode == EDIT_TERM_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(TermEditorActivity.EXTRA_ID, -1);
+                Toast.makeText(this, "Term saved!", Toast.LENGTH_SHORT).show();
 
-            if (id == -1) {
-                Toast.makeText(this, "Term can't be updated!", Toast.LENGTH_SHORT).show();
-                return;
+            } else if (requestCode == EDIT_TERM_REQUEST && resultCode == RESULT_OK) {
+                int id = data.getIntExtra(TermEditorActivity.EXTRA_COURSEID, -1);
+
+                if (id == -1) {
+                    Toast.makeText(this, "Term can't be updated!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
+                String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
+                String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
+
+                TermEntity term = new TermEntity(title, startDate, endDate);
+                term.setTerm_id(id);
+                termViewModel.insertTerm(term);
+                Toast.makeText(this, "Term has been UPDATED!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Term NOT Saved!", Toast.LENGTH_SHORT).show();
             }
-            String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
-            String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
-            String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
-
-            TermEntity term = new TermEntity(title, startDate, endDate);
-            term.setTerm_id(id);
-            termViewModel.insertTerm(term);
-            Toast.makeText(this, "Term has been UPDATED!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Term NOT Saved!", Toast.LENGTH_SHORT).show();
         }
+
+        @Override
+        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(TermListActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.nav_delete_all_terms:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
+                    builder.setMessage("Delete all terms?")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    termViewModel.deleteAllTerms();
+                                    Toast.makeText(TermListActivity.this, "All terms were deleted!", Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(TermListActivity.this, "Canceled!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    //Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+
+    */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.term_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
-                Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(TermListActivity.this, MainActivity.class);
                 startActivity(intent);
                 return true;
@@ -170,20 +216,9 @@ public class TermListActivity extends AppCompatActivity {
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
-
-                //Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-*/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.term_menu, menu);
-        return true;
-    }
-
 }

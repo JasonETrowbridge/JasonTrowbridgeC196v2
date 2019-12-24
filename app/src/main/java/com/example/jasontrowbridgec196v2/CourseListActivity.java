@@ -1,13 +1,11 @@
 package com.example.jasontrowbridgec196v2;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +24,6 @@ import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,7 +39,11 @@ public class CourseListActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         FloatingActionButton buttonAddCourse = findViewById(R.id.fab_add_course);
         buttonAddCourse.setOnClickListener(new View.OnClickListener() {
@@ -53,8 +54,7 @@ public class CourseListActivity extends AppCompatActivity {
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -106,7 +106,7 @@ public class CourseListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(CourseEntity course) {
                 Intent intent = new Intent(CourseListActivity.this, CourseEditorActivity.class);
-                intent.putExtra(CourseEditorActivity.EXTRA_ID, course.getCourse_id());
+                intent.putExtra(CourseEditorActivity.EXTRA_COURSEID, course.getCourse_id());
                 intent.putExtra(CourseEditorActivity.EXTRA_TITLE, course.getCourse_title());
                 intent.putExtra(CourseEditorActivity.EXTRA_START_DATE, course.getCourse_start_date());
                 intent.putExtra(CourseEditorActivity.EXTRA_END_DATE, course.getCourse_end_date());
@@ -133,7 +133,7 @@ public class CourseListActivity extends AppCompatActivity {
             Toast.makeText(this, "Course saved!", Toast.LENGTH_SHORT).show();
 
         } else if (requestCode == EDIT_COURSE_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(CourseEditorActivity.EXTRA_ID, -1);
+            int id = data.getIntExtra(CourseEditorActivity.EXTRA_COURSEID, -1);
 
             if (id == -1) {
                 Toast.makeText(this, "Course can't be updated!", Toast.LENGTH_SHORT).show();

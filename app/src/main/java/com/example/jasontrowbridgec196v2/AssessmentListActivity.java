@@ -35,6 +35,11 @@ public class AssessmentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assessment_list);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         FloatingActionButton buttonAddAssessment = findViewById(R.id.fab_add_assessment);
         buttonAddAssessment.setOnClickListener(new View.OnClickListener() {
@@ -45,9 +50,10 @@ public class AssessmentListActivity extends AppCompatActivity {
             }
         });
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initAssessmentRecyclerView();
+    }
 
+    private void initAssessmentRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -98,7 +104,7 @@ public class AssessmentListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AssessmentEntity assessment) {
                 Intent intent = new Intent(AssessmentListActivity.this, AssessmentEditorActivity.class);
-                intent.putExtra(AssessmentEditorActivity.EXTRA_ID, assessment.getAssessment_id());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_ASSESSMENTID, assessment.getAssessment_id());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_NAME, assessment.getAssessment_name());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_DUE_DATE, assessment.getAssessment_date());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_TYPE, assessment.getAssessment_type());

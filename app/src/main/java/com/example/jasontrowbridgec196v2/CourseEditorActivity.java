@@ -16,6 +16,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Adapter.AssessmentAdapter;
-import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
 import com.example.jasontrowbridgec196v2.Adapter.MentorAdapter;
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
@@ -38,14 +39,11 @@ import com.example.jasontrowbridgec196v2.Database.MentorEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.MentorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
@@ -54,8 +52,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     public static final int ADD_ASSESSMENT_REQUEST = 1;
     public static final int EDIT_ASSESSMENT_REQUEST = 2;
 
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    public static final String EXTRA_COURSEID =
+            "com.example.jasontrowbridgec196v2.EXTRA_COURSEID";
     public static final String EXTRA_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
     public static final String EXTRA_START_DATE =
@@ -99,8 +97,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
     Button startDatePickerButton;
     Button endDatePickerButton;
-    Button addMentorButton;
-    Button addAssessmentButton;
+    Button buttonAddMentor;
+    Button buttonAddAssessment;
     private TextView datePickerView;
 
     @Override
@@ -110,14 +108,13 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         setupDatePickers();
 
-        initViewModel();
-
         //Opens MentorEditorActivity when add_mentor_button is selected
-        Button buttonAddMentor = findViewById(R.id.add_mentor_button);
+        buttonAddMentor = findViewById(R.id.add_mentor_button);
         buttonAddMentor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +124,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         });
 
         //Opens AssessmentEditorActivity when add_assessment_button is selected
-        Button buttonAddAssessment = findViewById(R.id.add_assessment_button);
+        buttonAddAssessment = findViewById(R.id.add_assessment_button);
         buttonAddAssessment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,26 +152,58 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         termViewModel.getAllTerms().observe(this, new Observer<List<TermEntity>>() {
             @Override
             public void onChanged(List<TermEntity> termEntities) {
-               adapter2.addAll(termEntities);
+                adapter2.addAll(termEntities);
             }
         });
 
+        initViewModel();
         initViewModel2();
 
-        courseTitleEditText = findViewById(R.id.edit_text_title);
-        courseStartDateEditText = findViewById(R.id.course_start_date_text);
-        courseEndDateEditText = findViewById(R.id.course_end_date_text);
-        courseStatusTextView = findViewById(R.id.course_status_text);
-        courseTermTitleTextView = findViewById(R.id.course_term_title);
-
+        //Populate RecyclerViews
         initMentorRecyclerView();
         initAssessmentRecyclerView();
 
+        courseTitleEditText = findViewById(R.id.course_title_edit_text);
+        courseStartDateEditText = findViewById(R.id.course_start_date_edit_text);
+        courseEndDateEditText = findViewById(R.id.course_end_date_edit_text);
+        courseStatusTextView = findViewById(R.id.course_status_text);
+        courseTermTitleTextView = findViewById(R.id.course_term_title_text_view);
 
+        //Only enables AddMentor button and AddAssessment button if all fields are filled and !newCourse
+        courseTitleEditText.addTextChangedListener(courseTextWatcher);
+        courseStartDateEditText.addTextChangedListener(courseTextWatcher);
+        courseEndDateEditText.addTextChangedListener(courseTextWatcher);
+        courseStatusTextView.addTextChangedListener(courseTextWatcher);
+        courseTermTitleTextView.addTextChangedListener(courseTextWatcher);
 
     }
 
-    private void initMentorRecyclerView(){
+    private TextWatcher courseTextWatcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String courseTitle = courseTitleEditText.getText().toString().trim();
+            String startDate = courseStartDateEditText.getText().toString().trim();
+            String endDate = courseEndDateEditText.getText().toString().trim();
+            String status = courseStatusTextView.getText().toString().trim();
+            String term = courseTermTitleTextView.getText().toString().trim();
+
+            buttonAddMentor.setEnabled(!newCourse && !courseTitle.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty() && !status.isEmpty() && !term.isEmpty());
+            buttonAddAssessment.setEnabled(!newCourse && !courseTitle.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty() && !status.isEmpty() && !term.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private void initMentorRecyclerView() {
         //Setup RecyclerView for Mentor List
         RecyclerView recyclerView = findViewById(R.id.mentor_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -196,6 +225,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CourseEditorActivity.this);
@@ -226,7 +256,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             @Override
             public void onItemClick(MentorEntity mentor) {
                 Intent intent = new Intent(CourseEditorActivity.this, MentorEditorActivity.class);
-                intent.putExtra(MentorEditorActivity.EXTRA_ID, mentor.getMentor_id());
+                intent.putExtra(MentorEditorActivity.EXTRA_MENTORID, mentor.getMentor_id());
                 intent.putExtra(MentorEditorActivity.EXTRA_NAME, mentor.getMentor_name());
                 intent.putExtra(MentorEditorActivity.EXTRA_PHONE, mentor.getMentor_phone());
                 intent.putExtra(MentorEditorActivity.EXTRA_EMAIL, mentor.getMentor_email());
@@ -258,6 +288,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             public boolean onMove(@NonNull RecyclerView recyclerView2, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CourseEditorActivity.this);
@@ -288,10 +319,10 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             @Override
             public void onItemClick(AssessmentEntity assessment) {
                 Intent intent = new Intent(CourseEditorActivity.this, AssessmentEditorActivity.class);
-                intent.putExtra(AssessmentEditorActivity.EXTRA_ID, assessment.getAssessment_id());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_ASSESSMENTID, assessment.getAssessment_id());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_NAME, assessment.getAssessment_name());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_DUE_DATE, assessment.getAssessment_date());
-                intent.putExtra(AssessmentEditorActivity.EXTRA_TYPE,assessment.getAssessment_type());
+                intent.putExtra(AssessmentEditorActivity.EXTRA_TYPE, assessment.getAssessment_type());
                 intent.putExtra(AssessmentEditorActivity.EXTRA_COURSEID, assessment.getCourse_id());
                 startActivityForResult(intent, EDIT_ASSESSMENT_REQUEST);
             }
@@ -328,7 +359,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             @Override
             public void onChanged(@Nullable TermEntity termEntity) {
                 Intent intent = getIntent();
-                if (termEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (termEntity != null && intent.hasExtra(EXTRA_COURSEID)) {
                     courseTermTitleTextView.setText(String.valueOf(termEntity.getTerm_title()));
                     courseTermIDSpinner.getCount();
                     currentTermTitle = courseTermTitleTextView.getText().toString();
@@ -337,10 +368,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     //the corresponding TermEntity getTerm_title
                     if (courseTermTitleTextView != null) {
                         courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermTitle));
-
-
                     }
-
                 }
             }
         });
@@ -363,7 +391,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             @Override
             public void onChanged(@Nullable CourseEntity courseEntity) {
                 Intent intent = getIntent();
-                if (courseEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (courseEntity != null && intent.hasExtra(EXTRA_COURSEID)) {
                     courseTitleEditText.setText(courseEntity.getCourse_title());
                     courseStartDateEditText.setText(courseEntity.getCourse_start_date());
                     courseEndDateEditText.setText(courseEntity.getCourse_end_date());
@@ -388,8 +416,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             newCourse = true;
         } else {
             setTitle("Edit Course");
-            int courseID = extras.getInt(EXTRA_ID);
-
+            int courseID = extras.getInt(EXTRA_COURSEID);
+            newCourse = false;
             this.currentCourseID = courseID;
             courseEditorViewModel.loadData(courseID);
         }
@@ -402,7 +430,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         startDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.course_start_date_text);
+                datePickerView = findViewById(R.id.course_start_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -411,7 +439,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         endDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.course_end_date_text);
+                datePickerView = findViewById(R.id.course_end_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -425,12 +453,13 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         //Then you assign the term_id value of the termSelected to currentTermID
 
         TermEntity termSelected = (TermEntity) courseTermIDSpinner.getSelectedItem();
-        currentTermTitleID = String.valueOf(termSelected.getTerm_id());
-        currentTermTitle = String.valueOf(termSelected.getTerm_title());
+        if(termSelected != null) {
+            currentTermTitleID = String.valueOf(termSelected.getTerm_id());
+            currentTermTitle = String.valueOf(termSelected.getTerm_title());
 
-        //used to set term_id when saving course
-        currentTermID = termSelected.getTerm_id();
-
+            //used to set term_id when saving course
+            currentTermID = termSelected.getTerm_id();
+        }
         Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
         //courseTermTitleTextView.setText(termSelected.getTerm_title());

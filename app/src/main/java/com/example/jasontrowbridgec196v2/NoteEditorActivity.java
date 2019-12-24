@@ -23,18 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
-import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.Database.NoteEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentEditorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.NoteEditorViewModel;
 
 import java.util.List;
 
 public class NoteEditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    public static final String EXTRA_NOTEID =
+            "com.example.jasontrowbridgec196v2.EXTRA_NOTEID";
     public static final String EXTRA_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
     public static final String EXTRA_TEXT =
@@ -66,13 +64,10 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         initViewModel();
-
-        noteTitleEditText = findViewById(R.id.edit_title_text);
-        noteTextEditText = findViewById(R.id.note_text_edit_Text);
-        noteAssessmentNameTextView = findViewById(R.id.assessment_name_text_view);
 
         //AssessmentIDSpinner Spinner setup
         noteAssessmentIDSpinner = findViewById(R.id.note_assessment_spinner);
@@ -91,6 +86,11 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
         });
 
         initViewModel2();
+
+        noteTitleEditText = findViewById(R.id.note_title_edit_text);
+        noteTextEditText = findViewById(R.id.note_text_edit_Text);
+        noteAssessmentNameTextView = findViewById(R.id.note_assessment_name_text_view);
+
     }
 
     //This initViewModel2 gathers the Assessment Name needed for display
@@ -103,7 +103,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onChanged(@Nullable AssessmentEntity assessmentEntity) {
                 Intent intent = getIntent();
-                if (assessmentEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (assessmentEntity != null && intent.hasExtra(EXTRA_NOTEID)) {
                     noteAssessmentNameTextView.setText(String.valueOf(assessmentEntity.getAssessment_name()));
                     noteAssessmentIDSpinner.getCount();
                     currentAssessmentName = noteAssessmentNameTextView.getText().toString();
@@ -137,7 +137,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onChanged(@Nullable NoteEntity noteEntity) {
                 Intent intent = getIntent();
-                if (noteEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (noteEntity != null && intent.hasExtra(EXTRA_NOTEID)) {
                     noteTitleEditText.setText(noteEntity.getNote_title());
                     noteTextEditText.setText(noteEntity.getNote_text());
                     noteAssessmentID = noteEntity.getAssessment_id();
@@ -154,7 +154,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
             newNote = true;
         } else {
             setTitle("Edit Note");
-            int noteID = extras.getInt(EXTRA_ID);
+            int noteID = extras.getInt(EXTRA_NOTEID);
             this.currentNoteID = noteID;
             noteEditorViewModel.loadData(noteID);
         }
@@ -191,7 +191,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
         currentAssessmentName = String.valueOf(assessmentSelected.getAssessment_name());
         currentAssessmentID = assessmentSelected.getAssessment_id();
 
-        noteAssessmentNameTextView.setText(noteAssessmentIDSpinner.getSelectedItem().toString());
+        //noteAssessmentNameTextView.setText(noteAssessmentIDSpinner.getSelectedItem().toString());
     }
 
     @Override

@@ -70,4 +70,10 @@ public class AssessmentEntity {
     public int getCourse_id() {
         return course_id;
     }
+
+    @Override
+    public String toString() {
+        return assessment_name;
+    }
+
 }

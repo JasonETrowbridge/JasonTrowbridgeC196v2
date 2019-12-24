@@ -16,6 +16,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,8 +42,8 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     public static final int ADD_COURSE_REQUEST = 1;
     public static final int EDIT_COURSE_REQUEST = 2;
 
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    public static final String EXTRA_TERMID =
+            "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
     public static final String EXTRA_TITLE =
             "com.example.jasontrowbridgec196v2.EXTRA_TITLE";
     public static final String EXTRA_START_DATE =
@@ -50,8 +52,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             "com.example.jasontrowbridgec196v2.END_DATE";
     public static final String EXTRA_STATUS =
             "com.example.jasontrowbridgec196v2.STATUS";
-    public static final String EXTRA_TERMID =
-            "com.example.jasontrowbridgec196v2.TERMID";
+
 
     private TermEditorViewModel termEditorViewModel;
     private CourseViewModel courseViewModel;
@@ -60,11 +61,12 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     private int currentTermID;
     private boolean newTerm;
     private boolean editTerm;
-    private EditText editTextTitle;
-    private EditText termStartDate;
-    private EditText termEndDate;
+    private EditText termTitleEditText;
+    private EditText termStartDateEditText;
+    private EditText termEndDateEditText;
     Button startDatePickerButton;
     Button endDatePickerButton;
+    Button buttonAddCourse;
     private TextView datePickerView;
 
 
@@ -77,10 +79,11 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         //Opens CourseEditorActivity when add_course_button is selected
-        Button buttonAddCourse = findViewById(R.id.add_course_button);
+        buttonAddCourse = findViewById(R.id.add_course_button);
         buttonAddCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,14 +92,46 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             }
         });
 
-        editTextTitle = findViewById(R.id.edit_text_title);
-        termStartDate = findViewById(R.id.term_start_date_text);
-        termEndDate = findViewById(R.id.term_end_date_text);
-
         setupDatePickers();
         //initViewModel MUST before course list recycler view or currentTermID will be zero
         initViewModel();
 
+        initCourseRecyclerView();
+
+        termTitleEditText = findViewById(R.id.term_title_edit_text);
+        termStartDateEditText = findViewById(R.id.term_start_date_edit_text);
+        termEndDateEditText = findViewById(R.id.term_end_date_edit_text);
+
+        //Only enable AddCourse button if all fields are filled and !newTerm
+        termTitleEditText.addTextChangedListener(termTextWatcher);
+        termStartDateEditText.addTextChangedListener(termTextWatcher);
+        termEndDateEditText.addTextChangedListener(termTextWatcher);
+
+    }
+
+    private TextWatcher termTextWatcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String termTitle = termTitleEditText.getText().toString().trim();
+            String startDate = termStartDateEditText.getText().toString().trim();
+            String endDate = termEndDateEditText.getText().toString().trim();
+
+            buttonAddCourse.setEnabled(!newTerm && !termTitle.isEmpty() && !startDate.isEmpty() && !endDate.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private void initCourseRecyclerView(){
         //Setup RecyclerView for Course List
         RecyclerView recyclerView = findViewById(R.id.course_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -149,7 +184,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             @Override
             public void onItemClick(CourseEntity course) {
                 Intent intent = new Intent(TermEditorActivity.this, CourseEditorActivity.class);
-                intent.putExtra(CourseEditorActivity.EXTRA_ID, course.getCourse_id());
+                intent.putExtra(CourseEditorActivity.EXTRA_COURSEID, course.getCourse_id());
                 intent.putExtra(CourseEditorActivity.EXTRA_TITLE, course.getCourse_title());
                 intent.putExtra(CourseEditorActivity.EXTRA_START_DATE, course.getCourse_start_date());
                 intent.putExtra(CourseEditorActivity.EXTRA_END_DATE, course.getCourse_end_date());
@@ -158,7 +193,6 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
                 startActivityForResult(intent, EDIT_COURSE_REQUEST);
             }
         });
-
     }
 
     private void initViewModel(){
@@ -169,10 +203,10 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             @Override
             public void onChanged(@Nullable TermEntity termEntity){
                 Intent intent = getIntent();
-                if(termEntity != null && intent.hasExtra(EXTRA_ID)){
-                    editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-                    termStartDate.setText(intent.getStringExtra(EXTRA_START_DATE));
-                    termEndDate.setText(intent.getStringExtra(EXTRA_END_DATE));
+                if(termEntity != null && intent.hasExtra(EXTRA_TERMID)){
+                    termTitleEditText.setText(intent.getStringExtra(EXTRA_TITLE));
+                    termStartDateEditText.setText(intent.getStringExtra(EXTRA_START_DATE));
+                    termEndDateEditText.setText(intent.getStringExtra(EXTRA_END_DATE));
                 }
             }
         });
@@ -183,7 +217,8 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
             newTerm = true;
         } else {
             setTitle("Edit Term");
-            int termID = extras.getInt(EXTRA_ID);
+            newTerm = false;
+            int termID = extras.getInt(EXTRA_TERMID);
             this.currentTermID = termID;
             termEditorViewModel.loadData(termID);
         }
@@ -196,7 +231,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         startDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.term_start_date_text);
+                datePickerView = findViewById(R.id.term_start_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -205,7 +240,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         endDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.term_end_date_text);
+                datePickerView = findViewById(R.id.term_end_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -213,9 +248,9 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
 
     }
     private void saveTerm() {
-        String title = editTextTitle.getText().toString();
-        String startDate = termStartDate.getText().toString();
-        String endDate = termEndDate.getText().toString();
+        String title = termTitleEditText.getText().toString();
+        String startDate = termStartDateEditText.getText().toString();
+        String endDate = termEndDateEditText.getText().toString();
 
         if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title, start date, and end date.", Toast.LENGTH_SHORT).show();
@@ -227,9 +262,9 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         data.putExtra(EXTRA_START_DATE, startDate);
         data.putExtra(EXTRA_END_DATE, endDate);
 
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        int id = getIntent().getIntExtra(EXTRA_TERMID, -1);
         if(id != -1){
-            data.putExtra(EXTRA_ID, id);
+            data.putExtra(EXTRA_TERMID, id);
         }
         setResult(RESULT_OK, data);
         termEditorViewModel.saveData(title, startDate, endDate);

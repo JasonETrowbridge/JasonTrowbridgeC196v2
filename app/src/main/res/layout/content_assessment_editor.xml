@@ -24,7 +24,7 @@ tools:context=".AssessmentEditorActivity"
         app:layout_goneMarginTop="40dp" />
 
     <EditText
-        android:id="@+id/edit_text_name"
+        android:id="@+id/assessment_name_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -34,7 +34,7 @@ tools:context=".AssessmentEditorActivity"
         android:inputType="textPersonName"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toBottomOf="@+id/assessmentNameLabel"
-        app:layout_constraintStart_toStartOf="@+id/assessment_due_date_text" />
+        app:layout_constraintStart_toStartOf="@+id/assessment_due_date_edit_text" />
 
     <TextView
         android:id="@+id/assessment_due_date_label"
@@ -48,7 +48,7 @@ tools:context=".AssessmentEditorActivity"
         app:layout_constraintTop_toBottomOf="@+id/assessmentNameLabel" />
 
     <EditText
-        android:id="@+id/assessment_due_date_text"
+        android:id="@+id/assessment_due_date_edit_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -71,8 +71,8 @@ tools:context=".AssessmentEditorActivity"
 
         android:text="@string/due_button"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBottom_toBottomOf="@+id/assessment_due_date_text"
-        app:layout_constraintStart_toEndOf="@+id/assessment_due_date_text" />
+        app:layout_constraintBottom_toBottomOf="@+id/assessment_due_date_edit_text"
+        app:layout_constraintStart_toEndOf="@+id/assessment_due_date_edit_text" />
 
     <TextView
         android:id="@+id/assessment_type_label"
@@ -95,7 +95,7 @@ tools:context=".AssessmentEditorActivity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course_title_text" />
+        app:layout_constraintTop_toBottomOf="@+id/course_title_text_view" />
 
     <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/note_list_recycler_view"
@@ -117,12 +117,13 @@ tools:context=".AssessmentEditorActivity"
     android:backgroundTint="#2196F3"
     android:layout_marginTop="24dp"
     android:text="Add Note"
+    android:enabled="false"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/note_list_recycler_view" />
 
     <TextView
-        android:id="@+id/assessment_type_text"
+        android:id="@+id/assessment_type_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="8"
@@ -130,7 +131,7 @@ tools:context=".AssessmentEditorActivity"
         android:text="@string/assessment_type"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="@+id/assessment_type_label"
-        app:layout_constraintStart_toStartOf="@+id/assessment_due_date_text" />
+        app:layout_constraintStart_toStartOf="@+id/assessment_due_date_edit_text" />
 
     <Spinner
         android:id="@+id/assessment_spinner"
@@ -141,7 +142,7 @@ tools:context=".AssessmentEditorActivity"
         android:hint="@string/assessment_type"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/assessment_type_label"
-        app:layout_constraintStart_toEndOf="@+id/assessment_type_text" />
+        app:layout_constraintStart_toEndOf="@+id/assessment_type_text_view" />
 
     <TextView
         android:id="@+id/course_title_label"
@@ -154,23 +155,24 @@ tools:context=".AssessmentEditorActivity"
         app:layout_constraintTop_toBottomOf="@+id/assessment_type_label" />
 
     <TextView
-        android:id="@+id/course_title_text"
+        android:id="@+id/course_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Course Title"
         android:ems="8"
+        android:text="Course Title"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintBottom_toBottomOf="@+id/course_title_label"
-        app:layout_constraintStart_toStartOf="@+id/assessment_type_text" />
+        app:layout_constraintStart_toStartOf="@+id/assessment_type_text_view" />
 
     <Spinner
         android:id="@+id/assessment_course_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:ems="8"
         android:hint="@string/assessment_type"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/course_title_text"
-        app:layout_constraintStart_toStartOf="@+id/assessment_spinner" />
+        app:layout_constraintBottom_toBottomOf="@+id/course_title_text_view"
+        app:layout_constraintStart_toEndOf="@+id/course_title_text_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

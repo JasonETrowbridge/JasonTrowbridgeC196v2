@@ -32,8 +32,8 @@ import java.util.List;
 
 public class MentorEditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    public static final String EXTRA_MENTORID =
+            "com.example.jasontrowbridgec196v2.EXTRA_MENTORID";
     public static final String EXTRA_NAME =
             "com.example.jasontrowbridgec196v2.EXTRA_NAME";
     public static final String EXTRA_PHONE =
@@ -69,14 +69,15 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         initViewModel();
 
-        mentorNameEditText = findViewById(R.id.edit_text_name);
-        mentorPhoneEditText = findViewById(R.id.edit_text_phone);
-        mentorEmailEditText = findViewById(R.id.edit_text_email);
-        mentorCourseTitleTextView = findViewById(R.id.assessment_name_text_view);
+        mentorNameEditText = findViewById(R.id.mentor_name_edit_text);
+        mentorPhoneEditText = findViewById(R.id.mentor_phone_edit_text);
+        mentorEmailEditText = findViewById(R.id.mentor_email_edit_text);
+        mentorCourseTitleTextView = findViewById(R.id.mentor_course_title_text_view);
 
 
         //CourseIDSpinner Spinner setup
@@ -119,7 +120,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
             @Override
             public void onChanged(@Nullable CourseEntity courseEntity) {
                 Intent intent = getIntent();
-                if (courseEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (courseEntity != null && intent.hasExtra(EXTRA_MENTORID)) {
                     mentorCourseTitleTextView.setText(String.valueOf(courseEntity.getCourse_title()));
                     mentorCourseIDSpinner.getCount();
                     currentCourseTitle = mentorCourseTitleTextView.getText().toString();
@@ -153,7 +154,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
             @Override
             public void onChanged(@Nullable MentorEntity mentorEntity) {
                 Intent intent = getIntent();
-                if (mentorEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (mentorEntity != null && intent.hasExtra(EXTRA_MENTORID)) {
                     mentorNameEditText.setText(mentorEntity.getMentor_name());
                     mentorPhoneEditText.setText(mentorEntity.getMentor_phone());
                     mentorEmailEditText.setText(mentorEntity.getMentor_email());
@@ -171,7 +172,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
             newMentor = true;
         } else {
             setTitle("Edit Mentor");
-            int mentorID = extras.getInt(EXTRA_ID);
+            int mentorID = extras.getInt(EXTRA_MENTORID);
             this.currentMentorID = mentorID;
             mentorEditorViewModel.loadData(mentorID);
         }
@@ -234,6 +235,10 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+                return true;
+            case R.id.nav_home:
+                Intent intent = new Intent (MentorEditorActivity.this, MainActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

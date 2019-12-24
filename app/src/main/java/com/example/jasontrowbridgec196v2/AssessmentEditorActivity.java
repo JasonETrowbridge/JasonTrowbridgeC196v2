@@ -16,6 +16,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,7 +31,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.jasontrowbridgec196v2.Adapter.AssessmentAdapter;
 import com.example.jasontrowbridgec196v2.Adapter.NoteAdapter;
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
@@ -47,8 +48,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     public static final int ADD_NOTE_REQUEST = 1;
     public static final int EDIT_NOTE_REQUEST = 2;
 
-    public static final String EXTRA_ID =
-            "com.example.jasontrowbridgec196v2.EXTRA_ID";
+    public static final String EXTRA_ASSESSMENTID =
+            "com.example.jasontrowbridgec196v2.EXTRA_ASSESSMENTID";
     public static final String EXTRA_NAME =
             "com.example.jasontrowbridgec196v2.EXTRA_NAME";
     public static final String EXTRA_DUE_DATE =
@@ -78,6 +79,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     private TextView assessmentTypeTextView;
     private TextView assessmentCourseTitleTextView;
     Button assessmentDatePickerButton;
+    Button buttonAddNote;
     private TextView datePickerView;
     private Spinner assessmentTypeSpinner;
     private Spinner assessmentCourseIDSpinner;
@@ -96,14 +98,11 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-
-
-
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
         //Opens NoteEditorActivity when add_note_button is selected
-        Button buttonAddNote = findViewById(R.id.add_note_button);
+        buttonAddNote = findViewById(R.id.add_note_button);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,17 +111,15 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             }
         });
 
-        assessmentNameEditText = findViewById(R.id.edit_text_name);
-        assessmentDateEditText = findViewById(R.id.assessment_due_date_text);
-        assessmentTypeTextView = findViewById(R.id.assessment_type_text);
-        assessmentCourseTitleTextView = findViewById(R.id.course_title_text);
-
         setupDatePickers();
 
-        //initViewModel MUST before course list recycler view or currentTermID will be zero
+        //initViewModel MUST before note list recycler view or currentTermID will be zero
         initViewModel();
 
+        //Populate Note RecyclerView
         initNoteRecyclerView();
+
+
 
         //Type Spinner setup
         assessmentTypeSpinner = findViewById(R.id.assessment_spinner);
@@ -149,7 +146,40 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
         initViewModel2();
 
+        assessmentNameEditText = findViewById(R.id.assessment_name_edit_text);
+        assessmentDateEditText = findViewById(R.id.assessment_due_date_edit_text);
+        assessmentTypeTextView = findViewById(R.id.assessment_type_text_view);
+        assessmentCourseTitleTextView = findViewById(R.id.course_title_text_view);
+
+        assessmentNameEditText.addTextChangedListener(assessmentTextWatcher);
+        assessmentDateEditText.addTextChangedListener(assessmentTextWatcher);
+        assessmentTypeTextView.addTextChangedListener(assessmentTextWatcher);
+        assessmentCourseTitleTextView.addTextChangedListener(assessmentTextWatcher);
+
     }
+
+    private TextWatcher assessmentTextWatcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String assessmentName = assessmentNameEditText.getText().toString().trim();
+            String date = assessmentDateEditText.getText().toString().trim();
+            String type = assessmentTypeTextView.getText().toString().trim();
+            String course = assessmentCourseTitleTextView.getText().toString().trim();
+
+            buttonAddNote.setEnabled(!newAssessment && !assessmentName.isEmpty() && !date.isEmpty() && !type.isEmpty() && !course.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void initNoteRecyclerView(){
 
@@ -206,7 +236,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             @Override
             public void onItemClick(NoteEntity note) {
                 Intent intent = new Intent(AssessmentEditorActivity.this, NoteEditorActivity.class);
-                intent.putExtra(NoteEditorActivity.EXTRA_ID, note.getNote_id());
+                intent.putExtra(NoteEditorActivity.EXTRA_NOTEID, note.getNote_id());
                 intent.putExtra(NoteEditorActivity.EXTRA_TITLE, note.getNote_title());
                 intent.putExtra(NoteEditorActivity.EXTRA_TEXT, note.getNote_text());
                 intent.putExtra(NoteEditorActivity.EXTRA_ASSESSMENTID, note.getAssessment_id());
@@ -245,7 +275,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                 @Override
                 public void onChanged(@Nullable CourseEntity courseEntity) {
                     Intent intent = getIntent();
-                    if (courseEntity != null && intent.hasExtra(EXTRA_ID)) {
+                    if (courseEntity != null && intent.hasExtra(EXTRA_ASSESSMENTID)) {
                         assessmentCourseTitleTextView.setText(String.valueOf(courseEntity.getCourse_title()));
                         //currentCourseTitle = assessmentCourseTitleTextView.getText().toString();
                         //currentCourseTitleID = String.valueOf(courseEntity.getCourse_id());
@@ -275,7 +305,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             @Override
             public void onChanged(@Nullable AssessmentEntity assessmentEntity) {
                 Intent intent = getIntent();
-                if (assessmentEntity != null && intent.hasExtra(EXTRA_ID)) {
+                if (assessmentEntity != null && intent.hasExtra(EXTRA_ASSESSMENTID)) {
                     assessmentNameEditText.setText(assessmentEntity.getAssessment_name());
                     assessmentDateEditText.setText(assessmentEntity.getAssessment_date());
                     assessmentTypeTextView.setText(assessmentEntity.getAssessment_type());
@@ -294,7 +324,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
             newAssessment = true;
         } else {
             setTitle("Edit Assessment");
-            int assessmentID = extras.getInt(EXTRA_ID);
+            newAssessment = false;
+            int assessmentID = extras.getInt(EXTRA_ASSESSMENTID);
             this.currentAssessmentID = assessmentID;
             assessmentEditorViewModel.loadData(assessmentID);
         }
@@ -307,7 +338,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         assessmentDatePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerView = findViewById(R.id.assessment_due_date_text);
+                datePickerView = findViewById(R.id.assessment_due_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
             }
@@ -331,9 +362,9 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         data.putExtra(EXTRA_DUE_DATE, dueDate);
         data.putExtra(EXTRA_TYPE,type);
 
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        int id = getIntent().getIntExtra(EXTRA_COURSEID, -1);
         if(id != -1){
-            data.putExtra(EXTRA_ID, id);
+            data.putExtra(EXTRA_COURSEID, id);
         }
         setResult(RESULT_OK, data);
          */
