@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -22,10 +23,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static final String assessmentAlarmFile = "assessmentAlarms";
     public static final String alarmFile = "alarmFile";
     public static final String nextAlarmField = "nextAlarmID";
-    private static final String CHANNEL_ID = "TermTracker";
+    private static final String CHANNEL_ID = "WGUC196";
 
     @Override
     public void onReceive(Context context, Intent intent){
+        Toast.makeText(context, intent.getStringExtra("Channel ID = " + CHANNEL_ID), Toast.LENGTH_LONG).show();
 
         //Inputs
         String destination = intent.getStringExtra("destination");
@@ -43,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setContentTitle(alarmTitle)
                 .setContentText(alarmText);
 
-        // Target intent to launch
+        //Target intent to launch
         Intent resultIntent;
         Uri uri;
         SharedPreferences sharedPreferences;
@@ -69,14 +71,14 @@ public class NotificationReceiver extends BroadcastReceiver {
                 break;
         }
 
-        // task navigation for target intent.
+        //Task navigation for target intent.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent).setAutoCancel(true);
 
-        // Do the notification
+        //Do the notification
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(nextAlarmId, builder.build());
     }

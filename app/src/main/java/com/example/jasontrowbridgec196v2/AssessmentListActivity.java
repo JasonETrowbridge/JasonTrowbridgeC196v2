@@ -118,7 +118,7 @@ public class AssessmentListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
-                Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AssessmentListActivity.this, MainActivity.class);
                 startActivity(intent);
                 return true;

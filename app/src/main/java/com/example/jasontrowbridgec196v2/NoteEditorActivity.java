@@ -228,6 +228,19 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
                 AlertDialog alert = builder.create();
                 alert.show();
                 return true;
+            case R.id.share_note:
+                String title = noteTitleEditText.getText().toString();
+                String text = noteTextEditText.getText().toString();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+                // (Optional) Here we're setting the title of the content
+                sendIntent.putExtra(Intent.EXTRA_TITLE, title);
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

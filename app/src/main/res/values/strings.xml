@@ -11,7 +11,7 @@
     <string name="title_activity_term_list">Term List</string>
     <string name="channel_name">Term Tracker</string>
     <string name="channel_description">Tracker Alert</string>
-    <string name="channel_id">Term Tracker</string>
+    <string name="channel_id">WGUC196</string>
     <string name="terms_button">Terms</string>
     <string name="courses_button">Courses</string>
     <string name="assessments_button">Assessments</string>
@@ -55,6 +55,7 @@
     <string name="menu_delete_all_notes">Delete All Notes</string>
     <string name="phone_hint">(666) 555-1212</string>
     <string name="note_text">Note Text</string>
+    <string name="alert">Alert</string>
 
 
     <string-array name="status">

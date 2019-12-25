@@ -1,15 +1,10 @@
 package com.example.jasontrowbridgec196v2;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NavUtils;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,29 +27,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolbar);
+        createNotificationChannel();
 
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_terms:
-                Toast.makeText(this, "Terms selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Terms selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, TermListActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.nav_courses:
-                Toast.makeText(this, "Courses selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Courses selected", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(MainActivity.this, CourseListActivity.class);
                 startActivity(intent2);
                 return true;
             case R.id.nav_assessments:
-                Toast.makeText(this, "Assessments selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Assessments selected", Toast.LENGTH_SHORT).show();
                 Intent intent3 = new Intent(MainActivity.this, AssessmentListActivity.class);
                 startActivity(intent3);
-                return true;
-            case R.id.nav_settings:
-                Toast.makeText(this, "Settings selected", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -70,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
             String description = getString(R.string.channel_description);

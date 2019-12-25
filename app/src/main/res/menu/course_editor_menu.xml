@@ -6,7 +6,14 @@
         android:id="@+id/save_course"
         android:icon="@drawable/ic_save"
         android:title="@string/save"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
+    </item>
+
+    <item
+        android:id="@+id/alert_course"
+        android:icon="@drawable/ic_alert"
+        android:title="@string/alert"
+        app:showAsAction="always">
     </item>
 
 </menu>

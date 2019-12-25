@@ -238,4 +238,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/course_termid_label"
         app:layout_constraintStart_toStartOf="@+id/course_status_text" />
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

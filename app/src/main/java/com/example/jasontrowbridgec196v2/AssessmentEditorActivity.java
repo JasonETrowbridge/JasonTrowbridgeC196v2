@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.jasontrowbridgec196v2.Adapter.NoteAdapter;
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.DateConverter;
 import com.example.jasontrowbridgec196v2.Database.NoteEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentEditorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
@@ -41,8 +42,10 @@ import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.NoteViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class AssessmentEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     public static final int ADD_NOTE_REQUEST = 1;
@@ -66,7 +69,6 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     private CourseViewModel courseViewModel;
     private AssessmentViewModel assessmentViewModel;
 
-
     private CourseEditorViewModel courseEditorViewModel;
 
     public static int numAssessments;
@@ -89,6 +91,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     private String currentCourseTitle;
     private String currentCourseTitleID;
     private int assessmentCourseID;
+    private SimpleDateFormat dateFormat;
 
 
     @Override
@@ -100,6 +103,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
         //Opens NoteEditorActivity when add_note_button is selected
         buttonAddNote = findViewById(R.id.add_note_button);
@@ -158,6 +163,22 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
     }
 
+    private void _scheduleAlert(int id, String time, String title, String text) {
+        long now = DateConverter.nowDate();
+        long alertTime = DateConverter.toTimestamp(time);
+        if (now <= DateConverter.toTimestamp(time)) {
+            NotificationReceiver.scheduleAssessmentAlarm(getApplicationContext(), id, alertTime,
+                    text, title + ", occurring at: " + time);
+        }
+    }
+
+    public void scheduleAlert(MenuItem menuItem) {
+        String dateText = assessmentDateEditText.getText().toString();
+        String text = "Assessment is today!";
+        String title = assessmentNameEditText.getText().toString();
+        _scheduleAlert(currentAssessmentID, dateText, title, text);
+    }
+
     private TextWatcher assessmentTextWatcher = new TextWatcher() {
 
         @Override
@@ -190,7 +211,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
         final NoteAdapter noteAdapter = new NoteAdapter();
         recyclerView.setAdapter(noteAdapter);
-        Toast.makeText(this, "currentAssessmentID = " + currentAssessmentID, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "currentAssessmentID = " + currentAssessmentID, Toast.LENGTH_SHORT).show();
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.getNotesByAssessment(currentAssessmentID).observe(this, new Observer<List<NoteEntity>>() {
             @Override
@@ -401,6 +422,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                 AlertDialog alert = builder.create();
                 alert.show();
                 return true;
+            case R.id.alert_assessment:
+                scheduleAlert(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -413,7 +436,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month = month + 1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = month + "/" + dayOfMonth + "/" + year;
+        //String currentDateString = month + "/" + dayOfMonth + "/" + year;
+        String currentDateString = year + "-" + month + "-" + dayOfMonth;
         datePickerView.setText(currentDateString);
     }
 

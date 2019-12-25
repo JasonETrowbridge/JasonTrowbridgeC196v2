@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jasontrowbridgec196v2">
+    package="com.example.jasontrowbridgec196v2"
+    android:versionCode="1"
+    android:versionName="freedom">
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/term_edit"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_foreground"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- The actions you wish to listen to, below is an example -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".AssessmentEditorActivity"
             android:label="Assessment Editor"
@@ -17,17 +35,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".AssessmentListActivity"
             android:label="Assessment List"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".NoteEditorActivity"
             android:label="Note Editor"
@@ -36,17 +52,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".NoteListActivity"
             android:label="Note List"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
-                 android:name="android.support.PARENT_ACTIVITY"
-                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".MentorEditorActivity"
             android:label="Mentor Editor"
@@ -55,8 +69,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
-
         <activity
             android:name=".MentorListActivity"
             android:label="Mentor List"
@@ -66,7 +78,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".CourseEditorActivity"
             android:label="Course Editor"
@@ -75,7 +86,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".CourseListActivity"
             android:label="@string/title_activity_course_list"
@@ -85,7 +95,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".TermEditorActivity"
             android:label="Term Editor"
@@ -94,20 +103,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:label="Term Tracker C196"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action
-                    android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-                <category
-                    android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".TermListActivity"
             android:label="@string/title_activity_term_list"
@@ -117,7 +122,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jasontrowbridgec196v2.MainActivity" />
         </activity>
-
     </application>
 
 </manifest>

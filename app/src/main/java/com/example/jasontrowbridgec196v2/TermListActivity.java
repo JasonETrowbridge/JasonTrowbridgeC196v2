@@ -31,7 +31,7 @@ public class TermListActivity extends AppCompatActivity {
     public static final int ADD_TERM_REQUEST = 1;
     public static final int EDIT_TERM_REQUEST = 2;
     private TermViewModel termViewModel;
-
+    private int numCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,7 @@ public class TermListActivity extends AppCompatActivity {
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
                                 termViewModel.deleteTerm(adapter.getTermAtPosition(viewHolder.getAdapterPosition()));
                                 Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
@@ -113,76 +114,7 @@ public class TermListActivity extends AppCompatActivity {
         });
     }
 
-    /*
-        @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == ADD_TERM_REQUEST && resultCode == RESULT_OK) {
-                String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
-                String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
-                String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
 
-                TermEntity term = new TermEntity(title, startDate, endDate);
-                termViewModel.insertTerm(term);
-
-                Toast.makeText(this, "Term saved!", Toast.LENGTH_SHORT).show();
-
-            } else if (requestCode == EDIT_TERM_REQUEST && resultCode == RESULT_OK) {
-                int id = data.getIntExtra(TermEditorActivity.EXTRA_COURSEID, -1);
-
-                if (id == -1) {
-                    Toast.makeText(this, "Term can't be updated!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                String title = data.getStringExtra(TermEditorActivity.EXTRA_TITLE);
-                String startDate = data.getStringExtra(TermEditorActivity.EXTRA_START_DATE);
-                String endDate = data.getStringExtra(TermEditorActivity.EXTRA_END_DATE);
-
-                TermEntity term = new TermEntity(title, startDate, endDate);
-                term.setTerm_id(id);
-                termViewModel.insertTerm(term);
-                Toast.makeText(this, "Term has been UPDATED!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Term NOT Saved!", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.nav_home:
-                    Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(TermListActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    return true;
-                case R.id.nav_delete_all_terms:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
-                    builder.setMessage("Delete all terms?")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    termViewModel.deleteAllTerms();
-                                    Toast.makeText(TermListActivity.this, "All terms were deleted!", Toast.LENGTH_SHORT).show();
-                                }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(TermListActivity.this, "Canceled!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
-                    //Toast.makeText(this, "All Terms Deleted", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
-        }
-
-    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

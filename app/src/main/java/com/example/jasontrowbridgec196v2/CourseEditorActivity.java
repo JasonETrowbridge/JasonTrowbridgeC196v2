@@ -35,6 +35,7 @@ import com.example.jasontrowbridgec196v2.Adapter.AssessmentAdapter;
 import com.example.jasontrowbridgec196v2.Adapter.MentorAdapter;
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.DateConverter;
 import com.example.jasontrowbridgec196v2.Database.MentorEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
@@ -43,8 +44,11 @@ import com.example.jasontrowbridgec196v2.ViewModel.MentorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
 
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class CourseEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     public static final int ADD_MENTOR_REQUEST = 1;
@@ -74,8 +78,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     private MentorViewModel mentorViewModel;
     private AssessmentViewModel assessmentViewModel;
     private MentorAdapter mentorAdapter;
-
-    //experiment
     private TermEditorViewModel termEditorViewModel;
 
     private EditText courseTitleEditText;
@@ -100,6 +102,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     Button buttonAddMentor;
     Button buttonAddAssessment;
     private TextView datePickerView;
+    private SimpleDateFormat dateFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         setupDatePickers();
 
         //Opens MentorEditorActivity when add_mentor_button is selected
@@ -176,6 +180,26 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         courseStatusTextView.addTextChangedListener(courseTextWatcher);
         courseTermTitleTextView.addTextChangedListener(courseTextWatcher);
 
+    }
+
+    private void _scheduleAlert(int id, String time, String title, String text) {
+        long now = DateConverter.nowDate();
+        long alertTime = DateConverter.toTimestamp(time);
+        if (now <= DateConverter.toTimestamp(time)) {
+            NotificationReceiver.scheduleCourseAlarm(getApplicationContext(), id, alertTime,
+                    text, title + ", occurring at: " + time);
+        }
+    }
+
+    public void scheduleAlert(MenuItem menuItem) {
+        String dateText = courseStartDateEditText.getText().toString();
+        String text = "Course starts today!";
+        String title = courseTitleEditText.getText().toString();
+        _scheduleAlert(currentCourseID, dateText, title, text);
+
+        dateText = courseEndDateEditText.getText().toString();
+        text = "Course ends today!";
+        _scheduleAlert(currentCourseID, dateText, title, text);
     }
 
     private TextWatcher courseTextWatcher = new TextWatcher() {
@@ -442,6 +466,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 datePickerView = findViewById(R.id.course_end_date_edit_text);
                 DialogFragment datePicker = new DatePickerFragment();
                 datePicker.show(getSupportFragmentManager(), "date picker");
+
             }
         });
     }
@@ -460,8 +485,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
             //used to set term_id when saving course
             currentTermID = termSelected.getTerm_id();
         }
-        Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
         //courseTermTitleTextView.setText(termSelected.getTerm_title());
         courseStatusTextView.setText(courseStatusSpinner.getSelectedItem().toString());
     }
@@ -516,6 +541,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 AlertDialog alert = builder.create();
                 alert.show();
                 return true;
+            case R.id.alert_course:
+                scheduleAlert(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -528,7 +555,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month = month + 1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = month + "/" + dayOfMonth + "/" + year;
+       // String currentDateString = month + "/" + dayOfMonth + "/" + year;
+        String currentDateString = year + "-" + month + "-" + dayOfMonth;
         datePickerView.setText(currentDateString);
     }
 

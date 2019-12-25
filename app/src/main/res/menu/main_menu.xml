@@ -16,9 +16,6 @@
             android:id="@+id/nav_assessments"
             android:title="@string/menu_assessments"
             app:showAsAction="never"/>
-        <item
-            android:id="@+id/nav_settings"
-            android:title="@string/menu_settings"
-            app:showAsAction="never"/>
+
     </group>
 </menu>

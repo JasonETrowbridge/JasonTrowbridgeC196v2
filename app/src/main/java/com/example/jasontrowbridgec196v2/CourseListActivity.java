@@ -54,8 +54,11 @@ public class CourseListActivity extends AppCompatActivity {
             }
         });
 
+        initCourseListRecyclerView();
 
+    }
 
+    private void initCourseListRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -115,51 +118,12 @@ public class CourseListActivity extends AppCompatActivity {
             }
         });
     }
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_COURSE_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(CourseEditorActivity.EXTRA_TITLE);
-            String startDate = data.getStringExtra(CourseEditorActivity.EXTRA_START_DATE);
-            String endDate = data.getStringExtra(CourseEditorActivity.EXTRA_END_DATE);
-            String status = data.getStringExtra(CourseEditorActivity.EXTRA_STATUS);
-            //Not sure this is how I should get termID?
-            int termID = data.getIntExtra("TermID",Integer.parseInt(CourseEditorActivity.EXTRA_TERMID));
-            Toast.makeText(this, "Adding course with TermID = " + termID, Toast.LENGTH_SHORT).show();
-            CourseEntity course = new CourseEntity(title, startDate, endDate, status, termID);
-            courseViewModel.insertCourse(course);
 
-            Toast.makeText(this, "Course saved!", Toast.LENGTH_SHORT).show();
-
-        } else if (requestCode == EDIT_COURSE_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(CourseEditorActivity.EXTRA_COURSEID, -1);
-
-            if (id == -1) {
-                Toast.makeText(this, "Course can't be updated!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String title = data.getStringExtra(CourseEditorActivity.EXTRA_TITLE);
-            String startDate = data.getStringExtra(CourseEditorActivity.EXTRA_START_DATE);
-            String endDate = data.getStringExtra(CourseEditorActivity.EXTRA_END_DATE);
-            String status = data.getStringExtra(CourseEditorActivity.EXTRA_STATUS);
-            //Not sure this his how I should get termID?
-            int termID = data.getIntExtra("TermID",Integer.parseInt(CourseEditorActivity.EXTRA_TERMID));
-
-            CourseEntity course = new CourseEntity(title, startDate, endDate, status, termID);
-            course.setCourse_id(id);
-            courseViewModel.insertCourse(course);
-            Toast.makeText(this, "Course has been UPDATED!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Course NOT Saved!", Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_home:
-                Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Home selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CourseListActivity.this, MainActivity.class);
                 startActivity(intent);
                 return true;

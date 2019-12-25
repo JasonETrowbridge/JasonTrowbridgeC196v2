@@ -30,12 +30,15 @@ import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.DateConverter;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 public class TermEditorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
@@ -68,7 +71,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
     Button endDatePickerButton;
     Button buttonAddCourse;
     private TextView datePickerView;
-
+    private SimpleDateFormat dateFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,9 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
+        dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
         //Opens CourseEditorActivity when add_course_button is selected
         buttonAddCourse = findViewById(R.id.add_course_button);
@@ -139,7 +144,7 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
 
         final CourseAdapter courseAdapter = new CourseAdapter();
         recyclerView.setAdapter(courseAdapter);
-        Toast.makeText(this, "currentTermID = " + currentTermID, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "currentTermID = " + currentTermID, Toast.LENGTH_SHORT).show();
         courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
         courseViewModel.getCoursesByTerm(currentTermID).observe(this, new Observer<List<CourseEntity>>() {
             @Override
@@ -312,7 +317,8 @@ public class TermEditorActivity extends AppCompatActivity implements DatePickerD
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month = month +1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = month + "/" + dayOfMonth + "/" + year;
+       // String currentDateString = month + "/" + dayOfMonth + "/" + year;
+        String currentDateString = year + "-" + month + "-" + dayOfMonth;
         datePickerView.setText(currentDateString);
     }
 }

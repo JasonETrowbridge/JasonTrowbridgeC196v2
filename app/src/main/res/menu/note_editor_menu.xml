@@ -6,7 +6,13 @@
         android:id="@+id/save_note"
         android:icon="@drawable/ic_save"
         android:title="@string/save"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
     </item>
 
+    <item
+        android:id="@+id/share_note"
+        android:icon="@drawable/ic_share"
+        android:title="Share"
+        app:showAsAction="always">
+    </item>
 </menu>
