@@ -56,6 +56,7 @@
     <string name="phone_hint">(666) 555-1212</string>
     <string name="note_text">Note Text</string>
     <string name="alert">Alert</string>
+    <string name="title_activity_term_editor">Term Editor</string>
 
 
     <string-array name="status">

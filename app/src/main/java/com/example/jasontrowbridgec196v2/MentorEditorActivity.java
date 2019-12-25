@@ -172,6 +172,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
             newMentor = true;
         } else {
             setTitle("Edit Mentor");
+            newMentor = false;
             int mentorID = extras.getInt(EXTRA_MENTORID);
             this.currentMentorID = mentorID;
             mentorEditorViewModel.loadData(mentorID);

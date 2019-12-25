@@ -154,6 +154,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
             newNote = true;
         } else {
             setTitle("Edit Note");
+            newNote = false;
             int noteID = extras.getInt(EXTRA_NOTEID);
             this.currentNoteID = noteID;
             noteEditorViewModel.loadData(noteID);

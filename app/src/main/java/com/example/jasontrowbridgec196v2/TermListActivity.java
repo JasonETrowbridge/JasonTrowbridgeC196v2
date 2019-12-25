@@ -179,6 +179,8 @@ public class TermListActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.nav_delete_all_terms:
+                Toast.makeText(this,"Disabled", Toast.LENGTH_SHORT).show();
+                /*
                 AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
                 builder.setMessage("Delete all terms?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -198,6 +200,8 @@ public class TermListActivity extends AppCompatActivity {
                 AlertDialog alert = builder.create();
                 alert.show();
                 return true;
+                */
+
             default:
                 return super.onOptionsItemSelected(item);
         }

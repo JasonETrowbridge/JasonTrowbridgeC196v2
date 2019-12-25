@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jasontrowbridgec196v2"
     android:versionCode="1"
-    android:versionName="freedom">
+    android:versionName="snakepit">
 
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -33,7 +33,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.CourseListActivity" />
         </activity>
         <activity
             android:name=".AssessmentListActivity"
@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.CourseListActivity" />
         </activity>
         <activity
             android:name=".NoteEditorActivity"
@@ -50,16 +50,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
-        </activity>
-        <activity
-            android:name=".NoteListActivity"
-            android:label="Note List"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.AssessmentListActivity" />
         </activity>
         <activity
             android:name=".MentorEditorActivity"
@@ -67,7 +58,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.CourseListActivity" />
         </activity>
         <activity
             android:name=".MentorListActivity"
@@ -76,7 +67,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.CourseListActivity" />
         </activity>
         <activity
             android:name=".CourseEditorActivity"
@@ -84,7 +75,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.TermListActivity" />
         </activity>
         <activity
             android:name=".CourseListActivity"
@@ -93,15 +84,15 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.TermListActivity" />
         </activity>
         <activity
             android:name=".TermEditorActivity"
-            android:label="Term Editor"
+            android:label="@string/title_activity_term_editor"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.jasontrowbridgec196v2.MainActivity" />
+                android:value="com.example.jasontrowbridgec196v2.TermListActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
