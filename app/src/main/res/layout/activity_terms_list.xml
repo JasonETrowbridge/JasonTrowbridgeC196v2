@@ -6,6 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/term_course_list_recycler_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
 
@@ -47,9 +53,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/terms_list">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            tools:listitem="@layout/terms_list"/>
 
     </androidx.core.widget.NestedScrollView>
 

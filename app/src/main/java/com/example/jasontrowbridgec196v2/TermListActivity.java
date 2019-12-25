@@ -10,27 +10,35 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
 import com.example.jasontrowbridgec196v2.Adapter.TermAdapter;
+import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
+import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TermListActivity extends AppCompatActivity {
     public static final int ADD_TERM_REQUEST = 1;
     public static final int EDIT_TERM_REQUEST = 2;
     private TermViewModel termViewModel;
+    private CourseViewModel courseViewModel;
+    private CourseAdapter courseAdapter = new CourseAdapter();
     private int numCourses;
 
     @Override
@@ -53,6 +61,12 @@ public class TermListActivity extends AppCompatActivity {
             }
         });
 
+        initCourseRecyclerView();
+
+        initTermRecyclerView();
+    }
+
+    private void initTermRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -77,16 +91,30 @@ public class TermListActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(TermListActivity.this);
                 builder.setMessage("Are you sure you want to delete this term?")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
-                                termViewModel.deleteTerm(adapter.getTermAtPosition(viewHolder.getAdapterPosition()));
-                                Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
-                                startActivity(intent);
+                                boolean courseFound = false;
+                                for (int i = 0; i < numCourses; i++) {
+                                    int courseTermID = courseAdapter.getCourseAtPosition(i).getTerm_id();
+                                    int termTermID = adapter.getTermAtPosition(viewHolder.getAdapterPosition()).getTerm_id();
+                                    if (courseTermID == termTermID) {
+                                        courseFound = true;
+                                    }
+                                }
+                                if (!courseFound) {
+                                    termViewModel.deleteTerm(adapter.getTermAtPosition(viewHolder.getAdapterPosition()));
+                                    Toast.makeText(TermListActivity.this, "Term was deleted!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(TermListActivity.this, "Cannot delete Term with Courses associated with it!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(TermListActivity.this, TermListActivity.class);
+                                    startActivity(intent);
+                                }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -95,8 +123,10 @@ public class TermListActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+
                 AlertDialog alert = builder.create();
                 alert.show();
+
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -114,6 +144,25 @@ public class TermListActivity extends AppCompatActivity {
         });
     }
 
+    private void initCourseRecyclerView() {
+
+        RecyclerView recyclerView = findViewById(R.id.term_course_list_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        final CourseAdapter adapter = new CourseAdapter();
+        recyclerView.setAdapter(adapter);
+        courseViewModel = ViewModelProviders.of(this).get(CourseViewModel.class);
+        courseViewModel.getAllCourses().observe(this, new Observer<List<CourseEntity>>() {
+            @Override
+            public void onChanged(@Nullable final List<CourseEntity> courseEntities) {
+                adapter.setCourses(courseEntities);
+                courseAdapter.setCourses(courseEntities);
+                numCourses = courseEntities.size();
+
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
