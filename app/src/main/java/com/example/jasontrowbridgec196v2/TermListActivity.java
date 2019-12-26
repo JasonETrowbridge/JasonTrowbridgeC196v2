@@ -89,6 +89,7 @@ public class TermListActivity extends AppCompatActivity {
                 return false;
             }
 
+            //Included function to prevent deleting Terms with Courses associated with it
             @Override
             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
 
