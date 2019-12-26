@@ -1,5 +1,4 @@
-# JasonTrowbridgeC196v2
-
+# WGU-C196
 Summary of features implemented since this project was recently completed:
 
    - The database uses the Room Database structure.  This is a much more user friendly option.
