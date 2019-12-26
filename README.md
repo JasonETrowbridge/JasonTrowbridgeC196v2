@@ -2,21 +2,21 @@
 
 Summary of features implemented since this project was recently completed:
 
-      - The database uses the Room Database structure.  This is a much more user friendly option.
+   - The database uses the Room Database structure.  This is a much more user friendly option.
 
-      - Swipe to delete for all RecyclerView lists of Terms, Courses, Assessments, Mentors, and Notes.  
+   - Swipe to delete for all RecyclerView lists of Terms, Courses, Assessments, Mentors, and Notes.  
 
-      - Swipe to delete for Terms does a check to ensure it cannot be deleted if it has associated courses.
+   - Swipe to delete for Terms does a check to ensure it cannot be deleted if it has associated courses.
 
-      - Alerts/notifications are able to be set for the Courses and Assessments as required.  Terms were left out as this was         not a requirement at the time of submission.  Its easy enough to add if you like, just follow the code for the other two.
+   - Alerts/notifications are able to be set for the Courses and Assessments as required.  Terms were left out as this was         not a requirement at the time of submission.  Its easy enough to add if you like, just follow the code for the other two.
 
-      - The AddMentor and AddAssessment buttons will not be selectable within the CourseEditorActivity if you are doing an ADD for Course.  Also, you will have to fill all fields before those buttons are activated. This functionality extends to other Add buttons in other activities.
+   - The AddMentor and AddAssessment buttons will not be selectable within the CourseEditorActivity if you are doing an ADD for Course.  Also, you will have to fill all fields before those buttons are activated. This functionality extends to other Add buttons in other activities.
 
-      - Spinners are implemented where selections must be limited to a restricted set of inputs.  For example, Add/Edit Course status has the following choices {Plan To Take, In Progress, Completed, Dropped}.  If you are editing an existing Course, the spinners will initially point to the saved value for that Course. Also, you will note that when you change the Course 'Status' spinner selection, the textview changes accordingly to give visual confirmation of your selection change.
+   - Spinners are implemented where selections must be limited to a restricted set of inputs.  For example, Add/Edit Course status has the following choices {Plan To Take, In Progress, Completed, Dropped}.  If you are editing an existing Course, the spinners will initially point to the saved value for that Course. Also, you will note that when you change the Course 'Status' spinner selection, the textview changes accordingly to give visual confirmation of your selection change.
 
-      - There is a second Course spinner labeled Term that associates the current course being added/edited to its associated Term.  There is one limitation in this area that has not been overcome as of yet.  Example, if you are editing a Course associated with "Term 1", the Term textView field will show Term 1 as expected. However, the spinner does not point to the stored value as it does for the Status spinner.  The user will need to pay special attention to the spinner selection so the Course is saved to the correct term.  Also, when selecting a Term from the spinner, the Term textview will not update with the change.  For example, you are adding a Course, the Term textView will show the hint text 'Course Term Title'.  It will save the Term you have selected when saving the Course.  
+   - There is a second Course spinner labeled Term that associates the current course being added/edited to its associated Term.  There is one limitation in this area that has not been overcome as of yet.  Example, if you are editing a Course associated with "Term 1", the Term textView field will show Term 1 as expected. However, the spinner does not point to the stored value as it does for the Status spinner.  The user will need to pay special attention to the spinner selection so the Course is saved to the correct term.  Also, when selecting a Term from the spinner, the Term textview will not update with the change.  For example, you are adding a Course, the Term textView will show the hint text 'Course Term Title'.  It will save the Term you have selected when saving the Course.  
 
-      - The previously mentioned spinner limitation applies to other activities such as Mentor and Assessment.  Both of those are associated with a Course, so instead of seeing the Term spinner, you will see a Course spinner. 
+   - The previously mentioned spinner limitation applies to other activities such as Mentor and Assessment.  Both of those are associated with a Course, so instead of seeing the Term spinner, you will see a Course spinner. 
  
  
 
