@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent2);
                 return true;
             case R.id.nav_assessments:
-                //Toast.makeText(this, "Assessments selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Assessments selected", Toast.LENGTH_SHORT).show();
                 Intent intent3 = new Intent(MainActivity.this, AssessmentListActivity.class);
                 startActivity(intent3);
                 return true;
