@@ -540,6 +540,8 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                                     Toast.makeText(CourseEditorActivity.this, "Course was saved.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(CourseEditorActivity.this, "Course was NOT saved!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(CourseEditorActivity.this, MainActivity.class);
+                                    startActivity(intent);
                                 }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
