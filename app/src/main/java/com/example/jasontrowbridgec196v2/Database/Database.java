@@ -71,9 +71,9 @@ public abstract class Database extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            termDAO.insertTerm(new TermEntity("Term 1", "12/01/2019", "12/29/2019"));
-            termDAO.insertTerm(new TermEntity("Term 2", "12/02/2019", "12/30/2019"));
-            termDAO.insertTerm(new TermEntity("Term 3", "12/03/2019", "12/31/2019"));
+            termDAO.insertTerm(new TermEntity("Term 1", "2019-12-01", "2019-12-31"));
+            termDAO.insertTerm(new TermEntity("Term 2", "2019-12-02", "2019-12-30"));
+            termDAO.insertTerm(new TermEntity("Term 3", "2019-12-03", "2019-12-29"));
             return null;
         }
     }
