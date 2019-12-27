@@ -20,8 +20,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Adapter.AssessmentAdapter;
+import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
 import com.example.jasontrowbridgec196v2.Database.AssessmentEntity;
+import com.example.jasontrowbridgec196v2.Database.CourseEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -30,6 +33,7 @@ public class AssessmentListActivity extends AppCompatActivity {
     public static final int ADD_ASSESSMENT_REQUEST = 1;
     public static final int EDIT_ASSESSMENT_REQUEST = 2;
     private AssessmentViewModel assessmentViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -20,8 +20,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.jasontrowbridgec196v2.Adapter.CourseAdapter;
+import com.example.jasontrowbridgec196v2.Adapter.TermAdapter;
 import com.example.jasontrowbridgec196v2.Database.CourseEntity;
+import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -32,6 +35,7 @@ public class CourseListActivity extends AppCompatActivity {
     public static final int ADD_COURSE_REQUEST = 1;
     public static final int EDIT_COURSE_REQUEST = 2;
     private CourseViewModel courseViewModel;
+
 
 
     @Override
@@ -57,6 +61,7 @@ public class CourseListActivity extends AppCompatActivity {
         initCourseListRecyclerView();
 
     }
+
 
     private void initCourseListRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.recycler_view);

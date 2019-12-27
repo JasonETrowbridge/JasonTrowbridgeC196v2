@@ -125,7 +125,6 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         initNoteRecyclerView();
 
 
-
         //Type Spinner setup
         assessmentTypeSpinner = findViewById(R.id.assessment_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type, android.R.layout.simple_spinner_item);
@@ -367,30 +366,24 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
     }
 
-    private void saveAssessment() {
+    private boolean saveAssessment() {
+        if(assessmentCourseIDSpinner.getCount()== 0){
+            Toast.makeText(this, "You must create a Course first!", Toast.LENGTH_SHORT).show();
+            finish();
+            return false;
+        }
         String name = assessmentNameEditText.getText().toString();
         String dueDate = assessmentDateEditText.getText().toString();
         String type = assessmentTypeSpinner.getSelectedItem().toString();
 
         if (name.trim().isEmpty() || dueDate.trim().isEmpty() || type.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a name, due date, and type.", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
-        /*
-        Intent data = new Intent();
-        data.putExtra(EXTRA_NAME, name);
-        data.putExtra(EXTRA_DUE_DATE, dueDate);
-        data.putExtra(EXTRA_TYPE,type);
-
-        int id = getIntent().getIntExtra(EXTRA_COURSEID, -1);
-        if(id != -1){
-            data.putExtra(EXTRA_COURSEID, id);
-        }
-        setResult(RESULT_OK, data);
-         */
         assessmentEditorViewModel.saveData(name, dueDate, type, currentCourseID);
         finish();
+        return true;
     }
 
     @Override
@@ -409,8 +402,13 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                saveAssessment();
-                                Toast.makeText(AssessmentEditorActivity.this, "Assessment was saved.", Toast.LENGTH_SHORT).show();
+                                if(saveAssessment()){
+                                    Toast.makeText(AssessmentEditorActivity.this, "Assessment was saved.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(AssessmentEditorActivity.this, "Assessment was NOT saved!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(AssessmentEditorActivity.this, CourseListActivity.class);
+                                    startActivity(intent);
+                                }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -444,14 +442,15 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         CourseEntity courseSelected = (CourseEntity) assessmentCourseIDSpinner.getSelectedItem();
-        currentCourseTitleID = String.valueOf(courseSelected.getCourse_id());
-        currentCourseTitle = String.valueOf(courseSelected.getCourse_title());
+        if (courseSelected != null){
+            currentCourseTitleID = String.valueOf(courseSelected.getCourse_id());
+            currentCourseTitle = String.valueOf(courseSelected.getCourse_title());
 
-        //used to set course_id when saving assessment
-        currentCourseID = courseSelected.getCourse_id();
-
-        //assessmentCourseTitleTextView.setText(courseSelected.getCourse_title());
-        assessmentTypeTextView.setText(assessmentTypeSpinner.getSelectedItem().toString());
+            //used to set course_id when saving assessment
+            currentCourseID = courseSelected.getCourse_id();
+    }
+            //assessmentCourseTitleTextView.setText(courseSelected.getCourse_title());
+            assessmentTypeTextView.setText(assessmentTypeSpinner.getSelectedItem().toString());
     }
 
     @Override

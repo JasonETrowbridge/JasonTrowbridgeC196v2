@@ -40,6 +40,7 @@ import com.example.jasontrowbridgec196v2.Database.MentorEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
+import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.MentorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
@@ -478,15 +479,15 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         //Then you assign the term_id value of the termSelected to currentTermID
 
         TermEntity termSelected = (TermEntity) courseTermIDSpinner.getSelectedItem();
-        if(termSelected != null) {
+        if (termSelected != null) {
             currentTermTitleID = String.valueOf(termSelected.getTerm_id());
             currentTermTitle = String.valueOf(termSelected.getTerm_title());
 
             //used to set term_id when saving course
             currentTermID = termSelected.getTerm_id();
         }
-       // Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
-       // Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
         //courseTermTitleTextView.setText(termSelected.getTerm_title());
         courseStatusTextView.setText(courseStatusSpinner.getSelectedItem().toString());
     }
@@ -496,8 +497,13 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
     }
 
-    private void saveCourse() {
+    private boolean saveCourse() {
 
+        if (courseTermIDSpinner.getCount() == 0) {
+            Toast.makeText(this, "Please create a Term before adding a Course!", Toast.LENGTH_LONG).show();
+            finish();
+            return false;
+        }
         String title = courseTitleEditText.getText().toString();
         String startDate = courseStartDateEditText.getText().toString();
         String endDate = courseEndDateEditText.getText().toString();
@@ -506,10 +512,11 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
 
         if (title.trim().isEmpty() || startDate.trim().isEmpty() || endDate.trim().isEmpty() || status.trim().isEmpty() || term.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title, start date, and end date, status, and a term.", Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         courseEditorViewModel.saveData(title, startDate, endDate, status, currentTermID);
         finish();
+        return true;
     }
 
     @Override
@@ -528,8 +535,12 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                saveCourse();
-                                Toast.makeText(CourseEditorActivity.this, "Course was saved.", Toast.LENGTH_SHORT).show();
+
+                                if (saveCourse()) {
+                                    Toast.makeText(CourseEditorActivity.this, "Course was saved.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(CourseEditorActivity.this, "Course was NOT saved!", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -555,7 +566,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month = month + 1);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-       // String currentDateString = month + "/" + dayOfMonth + "/" + year;
+        // String currentDateString = month + "/" + dayOfMonth + "/" + year;
         String currentDateString = year + "-" + month + "-" + dayOfMonth;
         datePickerView.setText(currentDateString);
     }

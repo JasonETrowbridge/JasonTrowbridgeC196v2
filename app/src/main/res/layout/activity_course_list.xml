@@ -61,6 +61,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:clickable="true"
+
         android:nestedScrollingEnabled="false"
         app:backgroundTint="@color/colorAccent"
         app:layout_anchorGravity="right"
