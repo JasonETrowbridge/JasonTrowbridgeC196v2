@@ -30,7 +30,7 @@ import com.example.jasontrowbridgec196v2.ViewModel.MentorEditorViewModel;
 
 import java.util.List;
 
-public class MentorEditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class MentorEditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String EXTRA_MENTORID =
             "com.example.jasontrowbridgec196v2.EXTRA_MENTORID";
@@ -54,12 +54,13 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
     private EditText mentorEmailEditText;
     private TextView mentorCourseTitleTextView;
     private Spinner mentorCourseIDSpinner;
+    private int spinnerCount = 0;
+    private String originalCourseTitle;
 
     private int currentCourseID;
     private String currentCourseTitle;
     private String currentCourseTitleID;
     private int mentorCourseID;
-
 
 
     @Override
@@ -103,7 +104,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
     private int getSpinnerIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myString.trim())) {
+            if (spinner.getItemAtPosition(i).toString().trim().equals(myString.trim())) {
                 index = i;
             }
         }
@@ -122,15 +123,7 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
                 Intent intent = getIntent();
                 if (courseEntity != null && intent.hasExtra(EXTRA_MENTORID)) {
                     mentorCourseTitleTextView.setText(String.valueOf(courseEntity.getCourse_title()));
-                    mentorCourseIDSpinner.getCount();
-                    currentCourseTitle = mentorCourseTitleTextView.getText().toString();
-                    //currentCourseTitleID = String.valueOf(courseEntity.getCourse_id());
-                    //*** need to be able to take the getCourse_id value and convert that to
-                    //the corresponding CourseEntity getCourse_title
-                    if (mentorCourseTitleTextView != null) {
-                        mentorCourseIDSpinner.setSelection(getSpinnerIndex(mentorCourseIDSpinner, currentCourseTitle));
-                    }
-
+                    originalCourseTitle = mentorCourseTitleTextView.getText().toString().trim();
                 }
             }
         });
@@ -196,53 +189,62 @@ public class MentorEditorActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
         CourseEntity courseSelected = (CourseEntity) mentorCourseIDSpinner.getSelectedItem();
-        currentCourseTitleID = String.valueOf(courseSelected.getCourse_id());
-        currentCourseTitle = String.valueOf(courseSelected.getCourse_title());
-        currentCourseID = courseSelected.getCourse_id();
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mentor_editor_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_mentor:
-                AlertDialog.Builder builder = new AlertDialog.Builder(MentorEditorActivity.this);
-                builder.setMessage("Save?")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                saveMentor();
-                                Toast.makeText(MentorEditorActivity.this, "Mentor was saved.", Toast.LENGTH_SHORT).show();
-                            }
-                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MentorEditorActivity.this, CourseListActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-                return true;
-            case R.id.nav_home:
-                Intent intent = new Intent (MentorEditorActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (courseSelected != null) {
+            if (spinnerCount <= 1 && !newMentor) {
+                mentorCourseIDSpinner.setSelection(getSpinnerIndex(mentorCourseIDSpinner, originalCourseTitle));
+                spinnerCount++;
+            }
+            currentCourseTitleID = String.valueOf(courseSelected.getCourse_id());
+            currentCourseTitle = String.valueOf(courseSelected.getCourse_title());
+            if (spinnerCount > 1) {
+                mentorCourseTitleTextView.setText(currentCourseTitle);
+            }
+            currentCourseID = courseSelected.getCourse_id();
         }
     }
-}
+
+        @Override
+        public void onNothingSelected (AdapterView < ? > parent){
+
+        }
+
+        @Override
+        public boolean onCreateOptionsMenu (Menu menu){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.mentor_editor_menu, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onOptionsItemSelected (@NonNull MenuItem item){
+            switch (item.getItemId()) {
+                case R.id.save_mentor:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MentorEditorActivity.this);
+                    builder.setMessage("Save?")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    saveMentor();
+                                    Toast.makeText(MentorEditorActivity.this, "Mentor was saved.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(MentorEditorActivity.this, CourseListActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    return true;
+                case R.id.nav_home:
+                    Intent intent = new Intent(MentorEditorActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+    }

@@ -40,7 +40,7 @@ import com.example.jasontrowbridgec196v2.Database.MentorEntity;
 import com.example.jasontrowbridgec196v2.Database.TermEntity;
 import com.example.jasontrowbridgec196v2.ViewModel.AssessmentViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.CourseEditorViewModel;
-import com.example.jasontrowbridgec196v2.ViewModel.CourseViewModel;
+
 import com.example.jasontrowbridgec196v2.ViewModel.MentorViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermViewModel;
 import com.example.jasontrowbridgec196v2.ViewModel.TermEditorViewModel;
@@ -70,8 +70,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     public static final String EXTRA_TERMID =
             "com.example.jasontrowbridgec196v2.EXTRA_TERMID";
 
-    public static final String EXTRA_TERM_TITLE =
-            "com.example.jasontrowbridgec196v2.EXTRA_TERM_TITLE";
 
     private CourseEditorViewModel courseEditorViewModel;
     private TermViewModel termViewModel;
@@ -90,8 +88,10 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     private Spinner courseTermIDSpinner;
 
     private boolean newCourse;
-    private boolean initialSpinner;
+
+    private int spinnerCount = 0;
     private int currentTermID;
+    private String originalTermTitle;
     private String currentTermTitle;
     private String currentTermTitleID;
     private String currentCourseStatus;
@@ -354,20 +354,10 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
         });
     }
 
-    private int getSpinnerIndex(Spinner spinner, int myInt) {
-        int index = 0;
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myInt)) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
     private int getSpinnerIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myString.trim())) {
+            if (spinner.getItemAtPosition(i).toString().trim().equals(myString.trim())) {
                 index = i;
             }
         }
@@ -386,14 +376,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                 Intent intent = getIntent();
                 if (termEntity != null && intent.hasExtra(EXTRA_COURSEID)) {
                     courseTermTitleTextView.setText(String.valueOf(termEntity.getTerm_title()));
-                    courseTermIDSpinner.getCount();
-                    currentTermTitle = courseTermTitleTextView.getText().toString();
-                    //currentTermTitleID = String.valueOf(termEntity.getTerm_id());
-                    //*** need to be able to take the getTerm_id value and convert that to
-                    //the corresponding TermEntity getTerm_title
-                    if (courseTermTitleTextView != null) {
-                        courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, currentTermTitle));
-                    }
+                    originalTermTitle = courseTermTitleTextView.getText().toString().trim();
                 }
             }
         });
@@ -407,7 +390,7 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     }
 
     private void initViewModel() {
-        initialSpinner = false;
+
         courseEditorViewModel = ViewModelProviders.of(this)
                 .get(CourseEditorViewModel.class);
 
@@ -422,10 +405,6 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
                     courseEndDateEditText.setText(courseEntity.getCourse_end_date());
                     courseStatusTextView.setText(courseEntity.getCourse_status());
                     courseTermID = courseEntity.getTerm_id();
-
-                    //*** need to be able to take the getTerm_id value and convert that to
-                    //the corresponding TermEntity getTerm_title
-                    // courseTermTitleTextView.setText(currentTermTitle);
 
                     //Sets initial selection on courseStatusSpinner when editing existing course
                     if (courseStatusTextView != null) {
@@ -476,19 +455,26 @@ public class CourseEditorActivity extends AppCompatActivity implements DatePicke
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //When you select a course from the courseTermIDSpinner this part
         //captures the TermEntity by casting a single TermEntity corresponding to the selected Term
-        //Then you assign the term_id value of the termSelected to currentTermID
 
+        //spinnerCount is used to prevent courseTermTitleTextView from changing before user actually makes a selection
+        //also is used to (setSelection) on courseTermIDSpinner only once
         TermEntity termSelected = (TermEntity) courseTermIDSpinner.getSelectedItem();
         if (termSelected != null) {
+            if (spinnerCount <= 1 && !newCourse) {
+                //Toast.makeText(this, "Spinner index = " + getSpinnerIndex(courseTermIDSpinner, originalTermTitle), Toast.LENGTH_SHORT).show();
+                courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, originalTermTitle));
+                spinnerCount++;
+            }
             currentTermTitleID = String.valueOf(termSelected.getTerm_id());
             currentTermTitle = String.valueOf(termSelected.getTerm_title());
-
+            if (spinnerCount > 1) {
+                courseTermTitleTextView.setText(currentTermTitle);
+            }
             //used to set term_id when saving course
+
             currentTermID = termSelected.getTerm_id();
         }
-        // Toast.makeText(this, "currentTermTitleID = " + currentTermTitleID, Toast.LENGTH_SHORT).show();
-        // Toast.makeText(this, "currentTermTitle = " + currentTermTitle, Toast.LENGTH_SHORT).show();
-        //courseTermTitleTextView.setText(termSelected.getTerm_title());
+
         courseStatusTextView.setText(courseStatusSpinner.getSelectedItem().toString());
     }
 

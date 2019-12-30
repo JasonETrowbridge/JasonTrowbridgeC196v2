@@ -50,6 +50,8 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
     private EditText noteTextEditText;
     private TextView noteAssessmentNameTextView;
     private Spinner noteAssessmentIDSpinner;
+    private int spinnerCount = 0;
+    private String originalAssessmentName;
 
     private int currentAssessmentID;
     private String currentAssessmentName;
@@ -105,15 +107,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
                 Intent intent = getIntent();
                 if (assessmentEntity != null && intent.hasExtra(EXTRA_NOTEID)) {
                     noteAssessmentNameTextView.setText(String.valueOf(assessmentEntity.getAssessment_name()));
-                    noteAssessmentIDSpinner.getCount();
-                    currentAssessmentName = noteAssessmentNameTextView.getText().toString();
-                    //currentAssessmentNameID = String.valueOf(assessmentEntity.getAssessment_name());
-                    //*** need to be able to take the getAssessment_id value and convert that to
-                    //the corresponding AssessmentEntity getAssessment_name
-                    if (noteAssessmentNameTextView != null) {
-                        noteAssessmentIDSpinner.setSelection(getSpinnerIndex(noteAssessmentIDSpinner, currentAssessmentName));
-                    }
-
+                    originalAssessmentName = noteAssessmentNameTextView.getText().toString().trim();
                 }
             }
         });
@@ -164,7 +158,7 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
     private int getSpinnerIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myString.trim())) {
+            if (spinner.getItemAtPosition(i).toString().equals(myString.trim())) {
                 index = i;
             }
         }
@@ -188,11 +182,18 @@ public class NoteEditorActivity extends AppCompatActivity implements AdapterView
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         AssessmentEntity assessmentSelected = (AssessmentEntity) noteAssessmentIDSpinner.getSelectedItem();
+        if(assessmentSelected != null){
+            if(spinnerCount <= 1 && !newNote){
+                noteAssessmentIDSpinner.setSelection(getSpinnerIndex(noteAssessmentIDSpinner, originalAssessmentName));
+                spinnerCount++;
+            }
+        }
         currentAssessmentNameID = String.valueOf(assessmentSelected.getAssessment_id());
         currentAssessmentName = String.valueOf(assessmentSelected.getAssessment_name());
+        if(spinnerCount > 1){
+            noteAssessmentNameTextView.setText(currentAssessmentName);
+        }
         currentAssessmentID = assessmentSelected.getAssessment_id();
-
-        //noteAssessmentNameTextView.setText(noteAssessmentIDSpinner.getSelectedItem().toString());
     }
 
     @Override

@@ -73,9 +73,10 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
     public static int numAssessments;
     private int position;
+    private String originalCourseTitle;
     private int currentAssessmentID;
     private boolean newAssessment;
-    private boolean editAssessment;
+
     private EditText assessmentNameEditText;
     private EditText assessmentDateEditText;
     private TextView assessmentTypeTextView;
@@ -86,7 +87,7 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
     private Spinner assessmentTypeSpinner;
     private Spinner assessmentCourseIDSpinner;
 
-    private boolean initialSpinner;
+    private int spinnerCount = 0;
     private int currentCourseID;
     private String currentCourseTitle;
     private String currentCourseTitleID;
@@ -265,20 +266,11 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
         });
     }
 
-    private int getSpinnerIndex(Spinner spinner, int myInt) {
-        int index = 0;
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myInt)) {
-                index = i;
-            }
-        }
-        return index;
-    }
 
     private int getSpinnerIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).equals(myString)) {
+            if (spinner.getItemAtPosition(i).toString().trim().equals(myString.trim())) {
                 index = i;
             }
         }
@@ -297,14 +289,8 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
                     Intent intent = getIntent();
                     if (courseEntity != null && intent.hasExtra(EXTRA_ASSESSMENTID)) {
                         assessmentCourseTitleTextView.setText(String.valueOf(courseEntity.getCourse_title()));
-                        //currentCourseTitle = assessmentCourseTitleTextView.getText().toString();
-                        //currentCourseTitleID = String.valueOf(courseEntity.getCourse_id());
-                        //*** need to be able to take the getTerm_id value and convert that to
-                        //the corresponding TermEntity getTerm_title
-                        if (assessmentCourseTitleTextView != null) {
-                            assessmentCourseIDSpinner.setSelection(getSpinnerIndex(assessmentCourseIDSpinner, currentCourseID));
-                            //courseTermIDSpinner.setSelection(getSpinnerIndex(courseTermIDSpinner, courseTermTitleTextView.getText().toString()));
-                        }
+                        originalCourseTitle = assessmentCourseTitleTextView.getText().toString().trim();
+
                     }
                 }
             });
@@ -441,11 +427,18 @@ public class AssessmentEditorActivity extends AppCompatActivity implements DateP
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
         CourseEntity courseSelected = (CourseEntity) assessmentCourseIDSpinner.getSelectedItem();
         if (courseSelected != null){
+            if(spinnerCount <= 1 && !newAssessment){
+                assessmentCourseIDSpinner.setSelection(getSpinnerIndex(assessmentCourseIDSpinner, originalCourseTitle));
+                spinnerCount++;
+            }
             currentCourseTitleID = String.valueOf(courseSelected.getCourse_id());
             currentCourseTitle = String.valueOf(courseSelected.getCourse_title());
-
+            if(spinnerCount > 1){
+                assessmentCourseTitleTextView.setText(currentCourseTitle);
+            }
             //used to set course_id when saving assessment
             currentCourseID = courseSelected.getCourse_id();
     }
